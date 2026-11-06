@@ -38,6 +38,12 @@ test.describe('Documents (UI)', () => {
     await expect(page).toHaveURL(/\/documents\/proformas\/\d+\/print$/, { timeout: 40_000 })
     await expect(page.getByText(CUSTOMER_QUERY).first()).toBeVisible()
 
+    // The document header and the large footer (bank + terms + services) render.
+    await expect(page.getByText('VRN:', { exact: false }).first()).toBeVisible()
+    await expect(page.getByText('TERMS AND CONDITIONS')).toBeVisible()
+    await expect(page.getByText('BANK NAME')).toBeVisible()
+    await expect(page.getByText('Our services')).toBeVisible()
+
     await stubPrint(page)
     await page.getByRole('button', { name: 'Print / Save as PDF' }).click()
     await expect.poll(() => wasPrinted(page)).toBe(true)
