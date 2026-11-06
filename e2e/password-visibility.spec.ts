@@ -32,4 +32,20 @@ test.describe('Password visibility', () => {
     await expect(newPassword).toHaveAttribute('type', 'text')
     await expect(newPassword).toHaveValue('SomePass123')
   })
+
+  test('the user password fields can be shown', async ({ page }) => {
+    await login(page)
+    await page.goto('/settings/users')
+    await page.locator('tbody tr').first().click()
+    await expect(page).toHaveURL(/\/settings\/users\/\d+\/edit$/, { timeout: 40_000 })
+
+    const newPassword = page.getByLabel('New password', { exact: true })
+    await newPassword.fill('SomePass123')
+
+    const field = newPassword.locator('xpath=..')
+    await field.getByRole('button', { name: 'Show password' }).click()
+
+    await expect(newPassword).toHaveAttribute('type', 'text')
+    await expect(newPassword).toHaveValue('SomePass123')
+  })
 })
