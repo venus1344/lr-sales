@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 
 import { PrintButton } from '@/components/print-button'
+import { PrintDocument } from '@/components/print-document'
 import { PrintDetails, PrintFooter, PrintHeader } from '@/components/print-layout'
 import { requireAbility } from '@/lib/auth/guard'
 import { formatPrintDate } from '@/lib/company'
@@ -32,7 +33,7 @@ export default async function PrintDeliveryNotePage({
         <PrintButton />
       </div>
 
-      <div className="print-document text-sm">
+      <PrintDocument>
         <PrintHeader
           documentType="Delivery Note"
           number=""
@@ -89,7 +90,7 @@ export default async function PrintDeliveryNotePage({
         </div>
 
         <PrintFooter />
-      </div>
+      </PrintDocument>
     </div>
   )
 }

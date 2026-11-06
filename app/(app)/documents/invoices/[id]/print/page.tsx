@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 
 import { PrintButton } from '@/components/print-button'
+import { PrintDocument } from '@/components/print-document'
 import { PrintDetails, PrintFooter, PrintHeader, PrintPurpose } from '@/components/print-layout'
 import { requireAbility } from '@/lib/auth/guard'
 import { formatPrintDate } from '@/lib/company'
@@ -44,7 +45,7 @@ export default async function PrintInvoicePage({
         <PrintButton />
       </div>
 
-      <div className="print-document text-sm">
+      <PrintDocument>
         <PrintHeader
           documentType="Tax Invoice"
           number={invoice.notes ?? ''}
@@ -96,7 +97,7 @@ export default async function PrintInvoicePage({
         </table>
 
         <PrintFooter showBank showTotals totals={totals} currency={invoice.currency} />
-      </div>
+      </PrintDocument>
     </div>
   )
 }

@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 
 import { PrintButton } from '@/components/print-button'
+import { PrintDocument } from '@/components/print-document'
 import { PrintDetails, PrintFooter, PrintHeader, PrintPurpose } from '@/components/print-layout'
 import { requireAbility } from '@/lib/auth/guard'
 import { formatPrintDate } from '@/lib/company'
@@ -46,7 +47,7 @@ export default async function PrintLpoPage({
         <PrintButton />
       </div>
 
-      <div className="print-document text-sm">
+      <PrintDocument>
         <PrintHeader
           documentType="Local Purchase Order"
           number={lpo.reference_no ?? ''}
@@ -102,7 +103,7 @@ export default async function PrintLpoPage({
         ) : null}
 
         <PrintFooter showTotals totals={totals} currency={lpo.currency} />
-      </div>
+      </PrintDocument>
     </div>
   )
 }

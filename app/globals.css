@@ -266,8 +266,7 @@ body {
 }
 
 .print-document {
-  display: flex;
-  flex-direction: column;
+  display: block;
   width: 100%;
   min-height: 297mm;
   padding: 10mm;
@@ -278,11 +277,18 @@ body {
   box-shadow: 0 1px 3px rgba(17, 24, 39, 0.08);
 }
 
-/* Keep blocks intact and push the footer to the bottom of the page. */
-.print-document > * {
+/* Footer-at-bottom layout, only when the document fits one page
+   (the client adds `.fit` after measuring). */
+.print-document.fit {
+  display: flex;
+  flex-direction: column;
+}
+
+.print-document.fit > * {
   flex-shrink: 0;
 }
 
+/* Keep blocks intact across pages. */
 .print-header,
 .print-footer {
   break-inside: avoid;
@@ -290,6 +296,10 @@ body {
 }
 
 .print-footer {
+  margin-top: 4mm;
+}
+
+.print-document.fit .print-footer {
   margin-top: auto;
 }
 
@@ -322,6 +332,17 @@ body {
     background: #ffffff;
   }
 
+  /* Let the document paginate: the app shell's fixed height and the main
+     area's overflow would otherwise clip print content to one page. */
+  .app-shell,
+  .app-content,
+  .app-main {
+    display: block !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+
   .print-page {
     width: auto;
     max-width: none;
@@ -330,6 +351,9 @@ body {
   }
 
   .print-document {
+    /* Flex containers do not paginate in Chrome; use block flow so the items
+       table breaks across pages and nothing is clipped. */
+    display: block;
     width: auto;
     max-width: none;
     min-height: 276mm; /* A4 (297mm) minus 2 × 10mm margins, with 1mm slack */
@@ -337,5 +361,15 @@ body {
     border: none !important;
     border-radius: 0 !important;
     box-shadow: none !important;
+  }
+
+  /* Single-page documents: pin the footer to the page bottom. */
+  .print-document.fit {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .print-document.fit .print-footer {
+    margin-top: auto;
   }
 }
