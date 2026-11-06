@@ -137,6 +137,64 @@ body {
   text-decoration: underline;
 }
 
+/* Searchable combobox menu */
+.sk-menu {
+  position: absolute;
+  z-index: 30;
+  margin-top: 0.25rem;
+  width: 100%;
+  max-height: 15rem;
+  overflow-y: auto;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 0.625rem;
+  box-shadow: 0 10px 25px rgba(17, 24, 39, 0.12);
+}
+
+.sk-menu-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8125rem;
+  text-align: left;
+  color: var(--ink);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.sk-menu-option:hover,
+.sk-menu-option.is-active {
+  background: #f3f4f6;
+}
+
+.sk-menu-option .hint {
+  flex-shrink: 0;
+  max-width: 50%;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.sk-menu-create {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--ink);
+  text-decoration: none;
+  border-top: 1px solid var(--border);
+  cursor: pointer;
+}
+
+.sk-menu-create:hover {
+  background: #f9fafb;
+}
+
 /* Printable document */
 @media print {
   .no-print {
