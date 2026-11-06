@@ -13,12 +13,9 @@ import {
   IconItems,
   IconLpos,
   IconPackages,
-  IconProfile,
   IconProformas,
-  IconRoles,
   IconSettings,
   IconSuppliers,
-  IconUsers,
 } from '@/components/icons'
 
 export const instant = false
@@ -27,15 +24,6 @@ const sections = [
   {
     title: 'Main',
     items: [{ href: '/', label: 'Dashboard', icon: IconDashboard }],
-  },
-  {
-    title: 'Administration',
-    items: [
-      { href: '/settings/users', label: 'Users', icon: IconUsers },
-      { href: '/settings/roles', label: 'Roles', icon: IconRoles },
-      { href: '/settings/profile', label: 'My profile', icon: IconProfile },
-      { href: '/settings/more', label: 'General settings', icon: IconSettings },
-    ],
   },
   {
     title: 'Settings',
@@ -100,6 +88,13 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
         </nav>
 
         <div className="border-t border-gray-100 p-4">
+          <a
+            href="/admin"
+            className="mb-3 flex items-center gap-2.5 rounded-lg px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100"
+          >
+            <IconSettings className="h-4 w-4 shrink-0 text-gray-400" />
+            <span className="truncate">Administration</span>
+          </a>
           <p className="text-sm font-medium text-gray-900">{session.user.name}</p>
           <p className="mb-3 truncate text-xs text-gray-500">{session.user.email}</p>
           <form
