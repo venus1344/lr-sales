@@ -1,0 +1,704 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model abilities {
+  id           BigInt         @id @default(autoincrement()) @db.UnsignedBigInt
+  name         String
+  label        String?
+  created_at   DateTime?      @db.Timestamp(0)
+  updated_at   DateTime?      @db.Timestamp(0)
+  ability_role ability_role[]
+}
+
+model ability_role {
+  created_by BigInt    @db.UnsignedBigInt
+  role_id    BigInt    @db.UnsignedBigInt
+  ability_id BigInt    @db.UnsignedBigInt
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  abilities  abilities @relation(fields: [ability_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "ability_role_ability_id_foreign")
+  users      users     @relation(fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "ability_role_created_by_foreign")
+  roles      roles     @relation(fields: [role_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "ability_role_role_id_foreign")
+
+  @@id([role_id, ability_id])
+  @@index([ability_id], map: "ability_role_ability_id_foreign")
+  @@index([created_by], map: "ability_role_created_by_foreign")
+}
+
+model currencies {
+  id                                 BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  created_by                         BigInt?   @db.UnsignedBigInt
+  updated_by                         BigInt?   @db.UnsignedBigInt
+  code                               String    @db.Char(3)
+  name                               String    @db.VarChar(60)
+  rate                               Float     @default(1.00)
+  active                             Boolean   @default(true)
+  created_at                         DateTime? @db.Timestamp(0)
+  updated_at                         DateTime? @db.Timestamp(0)
+  users_currencies_created_byTousers users?    @relation("currencies_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "currencies_created_by_foreign")
+  users_currencies_updated_byTousers users?    @relation("currencies_updated_byTousers", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "currencies_updated_by_foreign")
+
+  @@index([created_by], map: "currencies_created_by_foreign")
+  @@index([updated_by], map: "currencies_updated_by_foreign")
+}
+
+model customers {
+  id                                BigInt               @id @default(autoincrement()) @db.UnsignedBigInt
+  created_by                        BigInt?              @db.UnsignedBigInt
+  updated_by                        BigInt?              @db.UnsignedBigInt
+  name                              String
+  postal_code                       String?
+  postal_address                    String?
+  location                          String?
+  contact                           String?
+  tin                               String?              @db.VarChar(20)
+  vrn                               String?              @db.VarChar(20)
+  status                            Boolean              @default(true)
+  created_at                        DateTime?            @db.Timestamp(0)
+  updated_at                        DateTime?            @db.Timestamp(0)
+  users_customers_created_byTousers users?               @relation("customers_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "customers_created_by_foreign")
+  users_customers_updated_byTousers users?               @relation("customers_updated_byTousers", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "customers_updated_by_foreign")
+  internet_customers                internet_customers[]
+  internet_invoices                 internet_invoices[]
+  projects                          projects[]
+
+  @@index([created_by], map: "customers_created_by_foreign")
+  @@index([updated_by], map: "customers_updated_by_foreign")
+}
+
+model delivery_note_items {
+  id                                          BigInt          @id @default(autoincrement()) @db.UnsignedBigInt
+  created_by                                  BigInt?         @db.UnsignedBigInt
+  updated_by                                  BigInt?         @db.UnsignedBigInt
+  dnote_id                                    BigInt?         @db.UnsignedBigInt
+  item_id                                     BigInt          @db.UnsignedBigInt
+  description                                 String          @db.Text
+  unit_measure                                String?         @db.VarChar(12)
+  quantity                                    Int
+  serial_no                                   String?
+  created_at                                  DateTime?       @db.Timestamp(0)
+  updated_at                                  DateTime?       @db.Timestamp(0)
+  users_delivery_note_items_created_byTousers users?          @relation("delivery_note_items_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "delivery_note_items_created_by_foreign")
+  delivery_notes                              delivery_notes? @relation(fields: [dnote_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "delivery_note_items_dnote_id_foreign")
+  items                                       items           @relation(fields: [item_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "delivery_note_items_item_id_foreign")
+  users_delivery_note_items_updated_byTousers users?          @relation("delivery_note_items_updated_byTousers", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "delivery_note_items_updated_by_foreign")
+
+  @@index([created_by], map: "delivery_note_items_created_by_foreign")
+  @@index([dnote_id], map: "delivery_note_items_dnote_id_foreign")
+  @@index([item_id], map: "delivery_note_items_item_id_foreign")
+  @@index([updated_by], map: "delivery_note_items_updated_by_foreign")
+}
+
+model delivery_notes {
+  id                                     BigInt                @id @default(autoincrement()) @db.UnsignedBigInt
+  created_by                             BigInt?               @db.UnsignedBigInt
+  updated_by                             BigInt?               @db.UnsignedBigInt
+  invoice_id                             BigInt?               @db.UnsignedBigInt
+  date                                   DateTime              @db.Date
+  name                                   String
+  postal                                 String?
+  location                               String?
+  contact                                String?
+  tin                                    String?               @db.VarChar(20)
+  vrn                                    String?               @db.VarChar(20)
+  created_at                             DateTime?             @db.Timestamp(0)
+  updated_at                             DateTime?             @db.Timestamp(0)
+  delivery_note_items                    delivery_note_items[]
+  users_delivery_notes_created_byTousers users?                @relation("delivery_notes_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "delivery_notes_created_by_foreign")
+  invoices                               invoices?             @relation(fields: [invoice_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "delivery_notes_invoice_id_foreign")
+  users_delivery_notes_updated_byTousers users?                @relation("delivery_notes_updated_byTousers", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "delivery_notes_updated_by_foreign")
+
+  @@index([created_by], map: "delivery_notes_created_by_foreign")
+  @@index([invoice_id], map: "delivery_notes_invoice_id_foreign")
+  @@index([updated_by], map: "delivery_notes_updated_by_foreign")
+}
+
+model expense_accounts {
+  id                                       BigInt     @id @default(autoincrement()) @db.UnsignedBigInt
+  created_by                               BigInt     @db.UnsignedBigInt
+  updated_by                               BigInt?    @db.UnsignedBigInt
+  name                                     String     @db.VarChar(200)
+  description                              String     @db.VarChar(300)
+  active                                   Boolean    @default(true)
+  created_at                               DateTime?  @db.Timestamp(0)
+  updated_at                               DateTime?  @db.Timestamp(0)
+  users_expense_accounts_created_byTousers users      @relation("expense_accounts_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "expense_accounts_created_by_foreign")
+  users_expense_accounts_updated_byTousers users?     @relation("expense_accounts_updated_byTousers", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "expense_accounts_updated_by_foreign")
+  expenses                                 expenses[]
+
+  @@index([created_by], map: "expense_accounts_created_by_foreign")
+  @@index([updated_by], map: "expense_accounts_updated_by_foreign")
+}
+
+model expenses {
+  id                                 BigInt           @id @default(autoincrement()) @db.UnsignedBigInt
+  created_by                         BigInt           @db.UnsignedBigInt
+  updated_by                         BigInt?          @db.UnsignedBigInt
+  requested_by                       BigInt           @db.UnsignedBigInt
+  expense_account_id                 BigInt           @db.UnsignedBigInt
+  income_account_id                  BigInt           @db.UnsignedBigInt
+  project_id                         BigInt?          @db.UnsignedBigInt
+  receipt_number                     String?          @db.VarChar(50)
+  amount                             Decimal          @db.Decimal(25, 2)
+  narration                          String           @db.Text
+  receipt                            String?
+  created_at                         DateTime?        @db.Timestamp(0)
+  updated_at                         DateTime?        @db.Timestamp(0)
+  users_expenses_created_byTousers   users            @relation("expenses_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "expenses_created_by_foreign")
+  expense_accounts                   expense_accounts @relation(fields: [expense_account_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "expenses_expense_account_id_foreign")
+  income_accounts                    income_accounts  @relation(fields: [income_account_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "expenses_income_account_id_foreign")
+  projects                           projects?        @relation(fields: [project_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "expenses_project_id_foreign")
+  users_expenses_requested_byTousers users            @relation("expenses_requested_byTousers", fields: [requested_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "expenses_requested_by_foreign")
+  users_expenses_updated_byTousers   users?           @relation("expenses_updated_byTousers", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "expenses_updated_by_foreign")
+
+  @@index([created_by], map: "expenses_created_by_foreign")
+  @@index([expense_account_id], map: "expenses_expense_account_id_foreign")
+  @@index([income_account_id], map: "expenses_income_account_id_foreign")
+  @@index([project_id], map: "expenses_project_id_foreign")
+  @@index([requested_by], map: "expenses_requested_by_foreign")
+  @@index([updated_by], map: "expenses_updated_by_foreign")
+}
+
+model income_accounts {
+  id                                      BigInt     @id @default(autoincrement()) @db.UnsignedBigInt
+  created_by                              BigInt     @db.UnsignedBigInt
+  updated_by                              BigInt?    @db.UnsignedBigInt
+  name                                    String     @db.VarChar(200)
+  description                             String     @db.VarChar(300)
+  active                                  Boolean    @default(true)
+  created_at                              DateTime?  @db.Timestamp(0)
+  updated_at                              DateTime?  @db.Timestamp(0)
+  expenses                                expenses[]
+  users_income_accounts_created_byTousers users      @relation("income_accounts_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "income_accounts_created_by_foreign")
+  users_income_accounts_updated_byTousers users?     @relation("income_accounts_updated_byTousers", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "income_accounts_updated_by_foreign")
+
+  @@index([created_by], map: "income_accounts_created_by_foreign")
+  @@index([updated_by], map: "income_accounts_updated_by_foreign")
+}
+
+model internet_customers {
+  id                                         BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  created_by                                 BigInt?   @db.UnsignedBigInt
+  updated_by                                 BigInt?   @db.UnsignedBigInt
+  customer_id                                BigInt    @db.UnsignedBigInt
+  package_id                                 BigInt?   @db.UnsignedBigInt
+  started                                    DateTime? @db.Date
+  status                                     Boolean   @default(true)
+  created_at                                 DateTime? @db.Timestamp(0)
+  updated_at                                 DateTime? @db.Timestamp(0)
+  users_internet_customers_created_byTousers users?    @relation("internet_customers_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "internet_customers_created_by_foreign")
+  customers                                  customers @relation(fields: [customer_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "internet_customers_customer_id_foreign")
+  packages                                   packages? @relation(fields: [package_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "internet_customers_package_id_foreign")
+  users_internet_customers_updated_byTousers users?    @relation("internet_customers_updated_byTousers", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "internet_customers_updated_by_foreign")
+
+  @@index([created_by], map: "internet_customers_created_by_foreign")
+  @@index([customer_id], map: "internet_customers_customer_id_foreign")
+  @@index([package_id], map: "internet_customers_package_id_foreign")
+  @@index([updated_by], map: "internet_customers_updated_by_foreign")
+}
+
+model internet_invoice_packages {
+  id                                                BigInt             @id @default(autoincrement()) @db.UnsignedBigInt
+  created_by                                        BigInt?            @db.UnsignedBigInt
+  updated_by                                        BigInt?            @db.UnsignedBigInt
+  invoice_id                                        BigInt?            @db.UnsignedBigInt
+  package_id                                        BigInt             @db.UnsignedBigInt
+  description                                       String             @db.Text
+  quantity                                          Int
+  unit_price                                        Float
+  created_at                                        DateTime?          @db.Timestamp(0)
+  updated_at                                        DateTime?          @db.Timestamp(0)
+  users_internet_invoice_packages_created_byTousers users?             @relation("internet_invoice_packages_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "internet_invoice_packages_created_by_foreign")
+  internet_invoices                                 internet_invoices? @relation(fields: [invoice_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "internet_invoice_packages_invoice_id_foreign")
+  packages                                          packages           @relation(fields: [package_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "internet_invoice_packages_package_id_foreign")
+  users_internet_invoice_packages_updated_byTousers users?             @relation("internet_invoice_packages_updated_byTousers", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "internet_invoice_packages_updated_by_foreign")
+
+  @@index([created_by], map: "internet_invoice_packages_created_by_foreign")
+  @@index([invoice_id], map: "internet_invoice_packages_invoice_id_foreign")
+  @@index([package_id], map: "internet_invoice_packages_package_id_foreign")
+  @@index([updated_by], map: "internet_invoice_packages_updated_by_foreign")
+}
+
+model internet_invoices {
+  id                                        BigInt                      @id @default(autoincrement()) @db.UnsignedBigInt
+  created_by                                BigInt?                     @db.UnsignedBigInt
+  updated_by                                BigInt?                     @db.UnsignedBigInt
+  customer_id                               BigInt?                     @db.UnsignedBigInt
+  reference                                 String
+  date                                      DateTime?                   @db.Date
+  effective_from                            DateTime?                   @db.Date
+  effective_to                              DateTime?                   @db.Date
+  vat                                       Float?
+  currency                                  String?                     @default("TZS") @db.VarChar(5)
+  status                                    Boolean                     @default(true)
+  created_at                                DateTime?                   @db.Timestamp(0)
+  updated_at                                DateTime?                   @db.Timestamp(0)
+  internet_invoice_packages                 internet_invoice_packages[]
+  users_internet_invoices_created_byTousers users?                      @relation("internet_invoices_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "internet_invoices_created_by_foreign")
+  customers                                 customers?                  @relation(fields: [customer_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "internet_invoices_customer_id_foreign")
+  users_internet_invoices_updated_byTousers users?                      @relation("internet_invoices_updated_byTousers", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "internet_invoices_updated_by_foreign")
+
+  @@index([created_by], map: "internet_invoices_created_by_foreign")
+  @@index([customer_id], map: "internet_invoices_customer_id_foreign")
+  @@index([updated_by], map: "internet_invoices_updated_by_foreign")
+}
+
+model invoice_items {
+  id                                    BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  created_by                            BigInt?   @db.UnsignedBigInt
+  updated_by                            BigInt?   @db.UnsignedBigInt
+  invoice_id                            BigInt    @db.UnsignedBigInt
+  item_id                               BigInt    @db.UnsignedBigInt
+  specification                         String    @db.Text
+  unit_measure                          String?   @db.VarChar(12)
+  quantity                              Int
+  price                                 Decimal   @db.Decimal(25, 2)
+  created_at                            DateTime? @db.Timestamp(0)
+  updated_at                            DateTime? @db.Timestamp(0)
+  users_invoice_items_created_byTousers users?    @relation("invoice_items_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "invoice_items_created_by_foreign")
+  invoices                              invoices  @relation(fields: [invoice_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "invoice_items_invoice_id_foreign")
+  items                                 items     @relation(fields: [item_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "invoice_items_item_id_foreign")
+  users_invoice_items_updated_byTousers users?    @relation("invoice_items_updated_byTousers", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "invoice_items_updated_by_foreign")
+
+  @@index([created_by], map: "invoice_items_created_by_foreign")
+  @@index([invoice_id], map: "invoice_items_invoice_id_foreign")
+  @@index([item_id], map: "invoice_items_item_id_foreign")
+  @@index([updated_by], map: "invoice_items_updated_by_foreign")
+}
+
+model invoices {
+  id                               BigInt           @id @default(autoincrement()) @db.UnsignedBigInt
+  created_by                       BigInt?          @db.UnsignedBigInt
+  updated_by                       BigInt?          @db.UnsignedBigInt
+  proforma_id                      BigInt?          @db.UnsignedBigInt
+  name                             String
+  postal                           String?
+  location                         String?
+  contact                          String?
+  date                             DateTime         @db.Date
+  notes                            String           @db.VarChar(15)
+  for                              String
+  advance                          Decimal          @db.Decimal(25, 2)
+  currency                         String           @db.VarChar(10)
+  exchange_rate                    Float            @default(1.00)
+  labor_charge                     Decimal          @default(0.00) @db.Decimal(25, 2)
+  withholding_tax                  Decimal          @default(0.00) @db.Decimal(4, 2)
+  vat                              Decimal          @default(0.00) @db.Decimal(4, 2)
+  tin                              String?          @db.VarChar(20)
+  vrn                              String?          @db.VarChar(20)
+  discount                         Float            @default(0) @db.Float
+  created_at                       DateTime?        @db.Timestamp(0)
+  updated_at                       DateTime?        @db.Timestamp(0)
+  delivery_notes                   delivery_notes[]
+  invoice_items                    invoice_items[]
+  users_invoices_created_byTousers users?           @relation("invoices_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "invoices_created_by_foreign")
+  proformas                        proformas?       @relation(fields: [proforma_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "invoices_proforma_id_foreign")
+  users_invoices_updated_byTousers users?           @relation("invoices_updated_byTousers", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "invoices_updated_by_foreign")
+
+  @@index([created_by], map: "invoices_created_by_foreign")
+  @@index([proforma_id], map: "invoices_proforma_id_foreign")
+  @@index([updated_by], map: "invoices_updated_by_foreign")
+}
+
+model item_categories {
+  id                                      BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  created_by                              BigInt    @db.UnsignedBigInt
+  updated_by                              BigInt?   @db.UnsignedBigInt
+  name                                    String    @db.VarChar(100)
+  description                             String?   @db.Text
+  active                                  Boolean   @default(true)
+  created_at                              DateTime? @db.Timestamp(0)
+  updated_at                              DateTime? @db.Timestamp(0)
+  users_item_categories_created_byTousers users     @relation("item_categories_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "item_categories_created_by_foreign")
+  users_item_categories_updated_byTousers users?    @relation("item_categories_updated_byTousers", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "item_categories_updated_by_foreign")
+  items                                   items[]
+
+  @@index([created_by], map: "item_categories_created_by_foreign")
+  @@index([updated_by], map: "item_categories_updated_by_foreign")
+}
+
+model items {
+  id                            BigInt                       @id @default(autoincrement()) @db.UnsignedBigInt
+  created_by                    BigInt?                      @db.UnsignedBigInt
+  updated_by                    BigInt?                      @db.UnsignedBigInt
+  category_id                   BigInt                       @default(1) @db.UnsignedBigInt
+  name                          String                       @db.VarChar(100)
+  unit_measure                  String?                      @db.VarChar(100)
+  specification                 String?                      @db.Text
+  price                         Decimal                      @db.Decimal(25, 2)
+  active                        Boolean                      @default(true)
+  created_at                    DateTime?                    @db.Timestamp(0)
+  updated_at                    DateTime?                    @db.Timestamp(0)
+  vat                           Boolean                      @default(true)
+  delivery_note_items           delivery_note_items[]
+  invoice_items                 invoice_items[]
+  item_categories               item_categories              @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "items_category_id_foreign")
+  users_items_created_byTousers users?                       @relation("items_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "items_created_by_foreign")
+  users_items_updated_byTousers users?                       @relation("items_updated_byTousers", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "items_updated_by_foreign")
+  local_purchase_order_items    local_purchase_order_items[]
+  proforma_items                proforma_items[]
+
+  @@index([category_id], map: "items_category_id_foreign")
+  @@index([created_by], map: "items_created_by_foreign")
+  @@index([updated_by], map: "items_updated_by_foreign")
+}
+
+model local_purchase_order_items {
+  id                                                 BigInt                @id @default(autoincrement()) @db.UnsignedBigInt
+  created_by                                         BigInt?               @db.UnsignedBigInt
+  updated_by                                         BigInt?               @db.UnsignedBigInt
+  lpo_id                                             BigInt                @db.UnsignedBigInt
+  item_id                                            BigInt                @db.UnsignedBigInt
+  specification                                      String                @db.Text
+  quantity                                           Int
+  price                                              Decimal               @db.Decimal(25, 2)
+  created_at                                         DateTime?             @db.Timestamp(0)
+  updated_at                                         DateTime?             @db.Timestamp(0)
+  users_local_purchase_order_items_created_byTousers users?                @relation("local_purchase_order_items_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "local_purchase_order_items_created_by_foreign")
+  items                                              items                 @relation(fields: [item_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "local_purchase_order_items_item_id_foreign")
+  local_purchase_orders                              local_purchase_orders @relation(fields: [lpo_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "local_purchase_order_items_lpo_id_foreign")
+  users_local_purchase_order_items_updated_byTousers users?                @relation("local_purchase_order_items_updated_byTousers", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "local_purchase_order_items_updated_by_foreign")
+
+  @@index([created_by], map: "local_purchase_order_items_created_by_foreign")
+  @@index([item_id], map: "local_purchase_order_items_item_id_foreign")
+  @@index([lpo_id], map: "local_purchase_order_items_lpo_id_foreign")
+  @@index([updated_by], map: "local_purchase_order_items_updated_by_foreign")
+}
+
+model local_purchase_orders {
+  id                                            BigInt                       @id @default(autoincrement()) @db.UnsignedBigInt
+  created_by                                    BigInt?                      @db.UnsignedBigInt
+  updated_by                                    BigInt?                      @db.UnsignedBigInt
+  supplier_id                                   BigInt                       @db.UnsignedBigInt
+  date                                          DateTime                     @db.Date
+  reference_no                                  String                       @db.VarChar(15)
+  currency                                      String                       @db.VarChar(100)
+  for                                           String?
+  proforma_referenced                           String?
+  extra_notes                                   String?                      @db.VarChar(300)
+  vat                                           String                       @default("0") @db.VarChar(4)
+  withholding_tax                               String                       @default("0") @db.VarChar(4)
+  status                                        Boolean                      @default(true)
+  created_at                                    DateTime?                    @db.Timestamp(0)
+  updated_at                                    DateTime?                    @db.Timestamp(0)
+  local_purchase_order_items                    local_purchase_order_items[]
+  users_local_purchase_orders_created_byTousers users?                       @relation("local_purchase_orders_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "local_purchase_orders_created_by_foreign")
+  suppliers                                     suppliers                    @relation(fields: [supplier_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "local_purchase_orders_supplier_id_foreign")
+  users_local_purchase_orders_updated_byTousers users?                       @relation("local_purchase_orders_updated_byTousers", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "local_purchase_orders_updated_by_foreign")
+
+  @@index([created_by], map: "local_purchase_orders_created_by_foreign")
+  @@index([supplier_id], map: "local_purchase_orders_supplier_id_foreign")
+  @@index([updated_by], map: "local_purchase_orders_updated_by_foreign")
+}
+
+model migrations {
+  id        Int    @id @default(autoincrement()) @db.UnsignedInt
+  migration String
+  batch     Int
+}
+
+model packages {
+  id                               BigInt                      @id @default(autoincrement()) @db.UnsignedBigInt
+  created_by                       BigInt?                     @db.UnsignedBigInt
+  updated_by                       BigInt?                     @db.UnsignedBigInt
+  name                             String                      @db.VarChar(200)
+  description                      String                      @db.Text
+  price                            Float
+  status                           Boolean                     @default(true)
+  created_at                       DateTime?                   @db.Timestamp(0)
+  updated_at                       DateTime?                   @db.Timestamp(0)
+  internet_customers               internet_customers[]
+  internet_invoice_packages        internet_invoice_packages[]
+  users_packages_created_byTousers users?                      @relation("packages_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "packages_created_by_foreign")
+  users_packages_updated_byTousers users?                      @relation("packages_updated_byTousers", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "packages_updated_by_foreign")
+
+  @@index([created_by], map: "packages_created_by_foreign")
+  @@index([updated_by], map: "packages_updated_by_foreign")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model password_resets {
+  email      String
+  token      String
+  created_at DateTime? @db.Timestamp(0)
+
+  @@index([email], map: "password_resets_email_index")
+  @@ignore
+}
+
+model proforma_items {
+  id                                     BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  created_by                             BigInt?   @db.UnsignedBigInt
+  updated_by                             BigInt?   @db.UnsignedBigInt
+  proforma_id                            BigInt    @db.UnsignedBigInt
+  item_id                                BigInt    @db.UnsignedBigInt
+  specification                          String    @db.Text
+  unit_measure                           String?   @db.VarChar(12)
+  quantity                               Int
+  price                                  Decimal   @db.Decimal(25, 2)
+  created_at                             DateTime? @db.Timestamp(0)
+  updated_at                             DateTime? @db.Timestamp(0)
+  users_proforma_items_created_byTousers users?    @relation("proforma_items_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "proforma_items_created_by_foreign")
+  items                                  items     @relation(fields: [item_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "proforma_items_item_id_foreign")
+  proformas                              proformas @relation(fields: [proforma_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "proforma_items_proforma_id_foreign")
+  users_proforma_items_updated_byTousers users?    @relation("proforma_items_updated_byTousers", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "proforma_items_updated_by_foreign")
+
+  @@index([created_by], map: "proforma_items_created_by_foreign")
+  @@index([item_id], map: "proforma_items_item_id_foreign")
+  @@index([proforma_id], map: "proforma_items_proforma_id_foreign")
+  @@index([updated_by], map: "proforma_items_updated_by_foreign")
+}
+
+model proformas {
+  id                                BigInt           @id @default(autoincrement()) @db.UnsignedBigInt
+  created_by                        BigInt?          @db.UnsignedBigInt
+  updated_by                        BigInt?          @db.UnsignedBigInt
+  name                              String
+  postal                            String?
+  location                          String?
+  contact                           String?
+  date                              DateTime         @db.Date
+  notes                             String           @db.VarChar(20)
+  for                               String
+  advance                           Decimal          @db.Decimal(25, 2)
+  currency                          String           @db.VarChar(10)
+  exchange_rate                     Float            @default(1.00)
+  labor_charge                      Decimal          @default(0.00) @db.Decimal(25, 2)
+  vat                               String           @default("0") @db.VarChar(4)
+  withholding_tax                   Decimal?         @default(0) @db.Decimal(10, 0)
+  tin                               String?          @db.VarChar(20)
+  vrn                               String?          @db.VarChar(20)
+  created_at                        DateTime?        @db.Timestamp(0)
+  updated_at                        DateTime?        @db.Timestamp(0)
+  invoices                          invoices[]
+  proforma_items                    proforma_items[]
+  users_proformas_created_byTousers users?           @relation("proformas_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "proformas_created_by_foreign")
+  users_proformas_updated_byTousers users?           @relation("proformas_updated_byTousers", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "proformas_updated_by_foreign")
+
+  @@index([created_by], map: "proformas_created_by_foreign")
+  @@index([updated_by], map: "proformas_updated_by_foreign")
+}
+
+model project_files {
+  id         BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  created_by BigInt    @db.UnsignedBigInt
+  project_id BigInt    @db.UnsignedBigInt
+  name       String
+  file       String
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  users      users     @relation(fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "project_files_created_by_foreign")
+  projects   projects  @relation(fields: [project_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "project_files_project_id_foreign")
+
+  @@index([created_by], map: "project_files_created_by_foreign")
+  @@index([project_id], map: "project_files_project_id_foreign")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model project_statuses {
+  id         BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  created_by BigInt    @db.UnsignedBigInt
+  project_id BigInt    @db.UnsignedBigInt
+  status     String    @db.VarChar(11)
+  comment    String?   @db.Text
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  users      users     @relation(fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "project_statuses_created_by_foreign")
+  projects   projects  @relation(fields: [project_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "project_statuses_project_id_foreign")
+
+  @@index([created_by], map: "project_statuses_created_by_foreign")
+  @@index([project_id], map: "project_statuses_project_id_foreign")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model projects {
+  id                               BigInt             @id @default(autoincrement()) @db.UnsignedBigInt
+  created_by                       BigInt             @db.UnsignedBigInt
+  updated_by                       BigInt?            @db.UnsignedBigInt
+  manager                          BigInt             @db.UnsignedBigInt
+  customer_id                      BigInt             @db.UnsignedBigInt
+  name                             String             @db.Text
+  starts_on                        DateTime           @db.Date
+  estimated_budget                 Decimal            @db.Decimal(25, 2)
+  estimated_time                   Int
+  description                      String             @db.Text
+  created_at                       DateTime?          @db.Timestamp(0)
+  updated_at                       DateTime?          @db.Timestamp(0)
+  expenses                         expenses[]
+  project_files                    project_files[]
+  project_statuses                 project_statuses[]
+  users_projects_created_byTousers users              @relation("projects_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "projects_created_by_foreign")
+  customers                        customers          @relation(fields: [customer_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "projects_customer_id_foreign")
+  users_projects_managerTousers    users              @relation("projects_managerTousers", fields: [manager], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "projects_manager_foreign")
+  users_projects_updated_byTousers users?             @relation("projects_updated_byTousers", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "projects_updated_by_foreign")
+
+  @@index([created_by], map: "projects_created_by_foreign")
+  @@index([customer_id], map: "projects_customer_id_foreign")
+  @@index([manager], map: "projects_manager_foreign")
+  @@index([updated_by], map: "projects_updated_by_foreign")
+}
+
+model role_user {
+  created_by                        BigInt    @db.UnsignedBigInt
+  user_id                           BigInt    @db.UnsignedBigInt
+  role_id                           BigInt    @db.UnsignedBigInt
+  created_at                        DateTime? @db.Timestamp(0)
+  updated_at                        DateTime? @db.Timestamp(0)
+  users_role_user_created_byTousers users     @relation("role_user_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "role_user_created_by_foreign")
+  roles                             roles     @relation(fields: [role_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "role_user_role_id_foreign")
+  users_role_user_user_idTousers    users     @relation("role_user_user_idTousers", fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "role_user_user_id_foreign")
+
+  @@id([user_id, role_id])
+  @@index([created_by], map: "role_user_created_by_foreign")
+  @@index([role_id], map: "role_user_role_id_foreign")
+}
+
+model roles {
+  id                            BigInt         @id @default(autoincrement()) @db.UnsignedBigInt
+  created_by                    BigInt         @db.UnsignedBigInt
+  updated_by                    BigInt?        @db.UnsignedBigInt
+  name                          String
+  description                   String?        @db.VarChar(500)
+  label                         String?
+  created_at                    DateTime?      @db.Timestamp(0)
+  updated_at                    DateTime?      @db.Timestamp(0)
+  ability_role                  ability_role[]
+  role_user                     role_user[]
+  users_roles_created_byTousers users          @relation("roles_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "roles_created_by_foreign")
+  users_roles_updated_byTousers users?         @relation("roles_updated_byTousers", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "roles_updated_by_foreign")
+
+  @@index([created_by], map: "roles_created_by_foreign")
+  @@index([updated_by], map: "roles_updated_by_foreign")
+}
+
+model setting_changelog {
+  id         BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  updated_by BigInt?   @db.UnsignedBigInt
+  setting_id BigInt    @db.UnsignedBigInt
+  from       String
+  to         String
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  settings   settings  @relation(fields: [setting_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "setting_changelog_setting_id_foreign")
+  users      users?    @relation(fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "setting_changelog_updated_by_foreign")
+
+  @@index([setting_id], map: "setting_changelog_setting_id_foreign")
+  @@index([updated_by], map: "setting_changelog_updated_by_foreign")
+}
+
+model settings {
+  id                BigInt              @id @default(autoincrement()) @db.UnsignedBigInt
+  name              String
+  value             String
+  created_at        DateTime?           @db.Timestamp(0)
+  updated_at        DateTime?           @db.Timestamp(0)
+  setting_changelog setting_changelog[]
+}
+
+model suppliers {
+  id                                BigInt                  @id @default(autoincrement()) @db.UnsignedBigInt
+  created_by                        BigInt?                 @db.UnsignedBigInt
+  updated_by                        BigInt?                 @db.UnsignedBigInt
+  name                              String
+  location                          String
+  contacts                          String
+  postal_code                       String?
+  postal_address                    String?
+  tin                               String?                 @db.VarChar(20)
+  vrn                               String?                 @db.VarChar(20)
+  status                            Boolean                 @default(true)
+  created_at                        DateTime?               @db.Timestamp(0)
+  updated_at                        DateTime?               @db.Timestamp(0)
+  local_purchase_orders             local_purchase_orders[]
+  users_suppliers_created_byTousers users?                  @relation("suppliers_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "suppliers_created_by_foreign")
+  users_suppliers_updated_byTousers users?                  @relation("suppliers_updated_byTousers", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "suppliers_updated_by_foreign")
+
+  @@index([created_by], map: "suppliers_created_by_foreign")
+  @@index([updated_by], map: "suppliers_updated_by_foreign")
+}
+
+model users {
+  id                                                                      BigInt                       @id @default(autoincrement()) @db.UnsignedBigInt
+  created_by                                                              BigInt?                      @db.UnsignedBigInt
+  updated_by                                                              BigInt?                      @db.UnsignedBigInt
+  name                                                                    String
+  email                                                                   String                       @unique(map: "users_email_unique")
+  email_verified_at                                                       DateTime?                    @db.Timestamp(0)
+  super                                                                   Boolean                      @default(false)
+  passport                                                                String?
+  education                                                               String?                      @db.Text
+  location                                                                String?                      @db.Text
+  skills                                                                  String?                      @db.Text
+  notes                                                                   String?                      @db.Text
+  active                                                                  Boolean                      @default(true)
+  theme                                                                   String                       @default("light")
+  password                                                                String
+  remember_token                                                          String?                      @db.VarChar(100)
+  created_at                                                              DateTime?                    @db.Timestamp(0)
+  updated_at                                                              DateTime?                    @db.Timestamp(0)
+  ability_role                                                            ability_role[]
+  currencies_currencies_created_byTousers                                 currencies[]                 @relation("currencies_created_byTousers")
+  currencies_currencies_updated_byTousers                                 currencies[]                 @relation("currencies_updated_byTousers")
+  customers_customers_created_byTousers                                   customers[]                  @relation("customers_created_byTousers")
+  customers_customers_updated_byTousers                                   customers[]                  @relation("customers_updated_byTousers")
+  delivery_note_items_delivery_note_items_created_byTousers               delivery_note_items[]        @relation("delivery_note_items_created_byTousers")
+  delivery_note_items_delivery_note_items_updated_byTousers               delivery_note_items[]        @relation("delivery_note_items_updated_byTousers")
+  delivery_notes_delivery_notes_created_byTousers                         delivery_notes[]             @relation("delivery_notes_created_byTousers")
+  delivery_notes_delivery_notes_updated_byTousers                         delivery_notes[]             @relation("delivery_notes_updated_byTousers")
+  expense_accounts_expense_accounts_created_byTousers                     expense_accounts[]           @relation("expense_accounts_created_byTousers")
+  expense_accounts_expense_accounts_updated_byTousers                     expense_accounts[]           @relation("expense_accounts_updated_byTousers")
+  expenses_expenses_created_byTousers                                     expenses[]                   @relation("expenses_created_byTousers")
+  expenses_expenses_requested_byTousers                                   expenses[]                   @relation("expenses_requested_byTousers")
+  expenses_expenses_updated_byTousers                                     expenses[]                   @relation("expenses_updated_byTousers")
+  income_accounts_income_accounts_created_byTousers                       income_accounts[]            @relation("income_accounts_created_byTousers")
+  income_accounts_income_accounts_updated_byTousers                       income_accounts[]            @relation("income_accounts_updated_byTousers")
+  internet_customers_internet_customers_created_byTousers                 internet_customers[]         @relation("internet_customers_created_byTousers")
+  internet_customers_internet_customers_updated_byTousers                 internet_customers[]         @relation("internet_customers_updated_byTousers")
+  internet_invoice_packages_internet_invoice_packages_created_byTousers   internet_invoice_packages[]  @relation("internet_invoice_packages_created_byTousers")
+  internet_invoice_packages_internet_invoice_packages_updated_byTousers   internet_invoice_packages[]  @relation("internet_invoice_packages_updated_byTousers")
+  internet_invoices_internet_invoices_created_byTousers                   internet_invoices[]          @relation("internet_invoices_created_byTousers")
+  internet_invoices_internet_invoices_updated_byTousers                   internet_invoices[]          @relation("internet_invoices_updated_byTousers")
+  invoice_items_invoice_items_created_byTousers                           invoice_items[]              @relation("invoice_items_created_byTousers")
+  invoice_items_invoice_items_updated_byTousers                           invoice_items[]              @relation("invoice_items_updated_byTousers")
+  invoices_invoices_created_byTousers                                     invoices[]                   @relation("invoices_created_byTousers")
+  invoices_invoices_updated_byTousers                                     invoices[]                   @relation("invoices_updated_byTousers")
+  item_categories_item_categories_created_byTousers                       item_categories[]            @relation("item_categories_created_byTousers")
+  item_categories_item_categories_updated_byTousers                       item_categories[]            @relation("item_categories_updated_byTousers")
+  items_items_created_byTousers                                           items[]                      @relation("items_created_byTousers")
+  items_items_updated_byTousers                                           items[]                      @relation("items_updated_byTousers")
+  local_purchase_order_items_local_purchase_order_items_created_byTousers local_purchase_order_items[] @relation("local_purchase_order_items_created_byTousers")
+  local_purchase_order_items_local_purchase_order_items_updated_byTousers local_purchase_order_items[] @relation("local_purchase_order_items_updated_byTousers")
+  local_purchase_orders_local_purchase_orders_created_byTousers           local_purchase_orders[]      @relation("local_purchase_orders_created_byTousers")
+  local_purchase_orders_local_purchase_orders_updated_byTousers           local_purchase_orders[]      @relation("local_purchase_orders_updated_byTousers")
+  packages_packages_created_byTousers                                     packages[]                   @relation("packages_created_byTousers")
+  packages_packages_updated_byTousers                                     packages[]                   @relation("packages_updated_byTousers")
+  proforma_items_proforma_items_created_byTousers                         proforma_items[]             @relation("proforma_items_created_byTousers")
+  proforma_items_proforma_items_updated_byTousers                         proforma_items[]             @relation("proforma_items_updated_byTousers")
+  proformas_proformas_created_byTousers                                   proformas[]                  @relation("proformas_created_byTousers")
+  proformas_proformas_updated_byTousers                                   proformas[]                  @relation("proformas_updated_byTousers")
+  project_files                                                           project_files[]
+  project_statuses                                                        project_statuses[]
+  projects_projects_created_byTousers                                     projects[]                   @relation("projects_created_byTousers")
+  projects_projects_managerTousers                                        projects[]                   @relation("projects_managerTousers")
+  projects_projects_updated_byTousers                                     projects[]                   @relation("projects_updated_byTousers")
+  role_user_role_user_created_byTousers                                   role_user[]                  @relation("role_user_created_byTousers")
+  role_user_role_user_user_idTousers                                      role_user[]                  @relation("role_user_user_idTousers")
+  roles_roles_created_byTousers                                           roles[]                      @relation("roles_created_byTousers")
+  roles_roles_updated_byTousers                                           roles[]                      @relation("roles_updated_byTousers")
+  setting_changelog                                                       setting_changelog[]
+  suppliers_suppliers_created_byTousers                                   suppliers[]                  @relation("suppliers_created_byTousers")
+  suppliers_suppliers_updated_byTousers                                   suppliers[]                  @relation("suppliers_updated_byTousers")
+  users_users_created_byTousers                                           users?                       @relation("users_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "users_created_by_foreign")
+  other_users_users_created_byTousers                                     users[]                      @relation("users_created_byTousers")
+  users_users_updated_byTousers                                           users?                       @relation("users_updated_byTousers", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "users_updated_by_foreign")
+  other_users_users_updated_byTousers                                     users[]                      @relation("users_updated_byTousers")
+
+  @@index([created_by], map: "users_created_by_foreign")
+  @@index([updated_by], map: "users_updated_by_foreign")
+}
