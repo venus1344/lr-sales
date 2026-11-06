@@ -2,6 +2,7 @@ import { AuthError } from 'next-auth'
 import { redirect } from 'next/navigation'
 
 import { signIn } from '@/auth'
+import { PasswordInput } from '@/components/password-input'
 
 export const instant = false
 
@@ -57,13 +58,11 @@ export default async function SignInPage({
             <label htmlFor="password" className="block text-sm font-medium text-gray-700">
               Password
             </label>
-            <input
+            <PasswordInput
               id="password"
               name="password"
-              type="password"
               required
               autoComplete="current-password"
-              className="sk-input"
             />
           </div>
           <button
