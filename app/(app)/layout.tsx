@@ -41,7 +41,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-      <aside className="hidden w-60 flex-col border-r border-gray-200 bg-white md:flex">
+      <aside className="no-print hidden w-60 flex-col border-r border-gray-200 bg-white md:flex">
         <div className="border-b border-gray-100 px-5 py-4">
           <p className="text-base font-bold">WeLink Sales</p>
           <p className="text-xs text-gray-500">Invoicing &amp; Sales</p>
@@ -85,7 +85,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex items-center justify-between gap-4 border-b border-gray-200 bg-white px-6 py-3">
+        <header className="no-print flex items-center justify-between gap-4 border-b border-gray-200 bg-white px-6 py-3">
           <input className="sk-input max-w-xs" placeholder="Search…" aria-label="Search" />
           <span className="text-sm text-gray-600">{session.user.name}</span>
         </header>

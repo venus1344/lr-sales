@@ -136,3 +136,21 @@ body {
 .sk-link-danger:hover {
   text-decoration: underline;
 }
+
+/* Printable document */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: #ffffff;
+  }
+
+  .print-document {
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+  }
+}
