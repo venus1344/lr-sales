@@ -57,6 +57,13 @@
                                 <p>Dashboard</p>
                             </a>
                         </li>
+                        <li class="nav-header">SETTINGS</li>
+                        <li class="nav-item">
+                            <a href="{{ route('currencies') }}" class="nav-link {{ request()->routeIs('currencies') ? 'active' : '' }}">
+                                <i class="nav-icon fa-solid fa-coins"></i>
+                                <p>Currencies</p>
+                            </a>
+                        </li>
                     </ul>
                 </nav>
             </div>
