@@ -33,7 +33,7 @@ services:
     build:
       context: .
       target: builder
-    command: sh -c "npx prisma db push"
+    command: sh -c "npx prisma db push --skip-generate"
     environment:
       DATABASE_URL: mysql://welink:${MYSQL_PASSWORD}@db:3306/welink_sales
     depends_on:
