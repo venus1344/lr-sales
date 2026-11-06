@@ -17,6 +17,16 @@ export const userUpdateSchema = z.object({
   email: z.string().trim().email('Enter a valid email').max(300),
 })
 
+export const userPasswordResetSchema = z
+  .object({
+    password: z.string().min(8, 'Password must be at least 8 characters'),
+    password_confirmation: z.string().min(1, 'Confirm the password'),
+  })
+  .refine((data) => data.password === data.password_confirmation, {
+    message: 'Passwords do not match',
+    path: ['password_confirmation'],
+  })
+
 export const profileSchema = z.object({
   name: z.string().trim().min(1, 'Name is required').max(300),
   email: z.string().trim().email('Enter a valid email').max(300),
@@ -39,5 +49,6 @@ export const passwordChangeSchema = z
 
 export type UserCreateInput = z.infer<typeof userCreateSchema>
 export type UserUpdateInput = z.infer<typeof userUpdateSchema>
+export type UserPasswordResetInput = z.infer<typeof userPasswordResetSchema>
 export type ProfileInput = z.infer<typeof profileSchema>
 export type PasswordChangeInput = z.infer<typeof passwordChangeSchema>

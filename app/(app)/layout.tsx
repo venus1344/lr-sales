@@ -96,7 +96,13 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
             <span className="truncate">Administration</span>
           </a>
           <p className="text-sm font-medium text-gray-900">{session.user.name}</p>
-          <p className="mb-3 truncate text-xs text-gray-500">{session.user.email}</p>
+          <p className="truncate text-xs text-gray-500">{session.user.email}</p>
+          <a
+            href="/settings/profile#password"
+            className="mb-3 block text-xs font-medium text-gray-600 hover:text-gray-900"
+          >
+            Change password
+          </a>
           <form
             action={async () => {
               'use server'

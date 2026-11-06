@@ -29,7 +29,7 @@ export default async function ProfilePage() {
         />
       </div>
 
-      <div className="sk-card p-4">
+      <div id="password" className="sk-card scroll-mt-24 p-4">
         <h2 className="mb-3 font-semibold">Change password</h2>
         <PasswordForm />
       </div>
