@@ -193,9 +193,7 @@ body {
 }
 
 .sk-menu-option .hint {
-  flex-shrink: 0;
-  color: var(--muted);
-  font-size: 0.75rem;
+  display: none;
 }
 
 .sk-menu-create {
