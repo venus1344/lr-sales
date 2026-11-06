@@ -114,6 +114,18 @@ in a kebab menu.
 - Recent proformas and quick links.
 - (Pending) income chart and recent projects.
 
+### 5.4 Administration
+- **Users** (`/settings/users`, `/settings/users/new`, `/settings/users/[id]/edit`): list with search +
+  pagination; create/edit with name, email, password (create only), role checkboxes; block/unblock.
+  Abilities: `user_list`, `user_store`, `user_update`, `user_remove`.
+- **Roles** (`/settings/roles`): list (name, description, ability badges); create/edit with ability
+  checkboxes + "check all"; delete. Abilities: `role_list`, `role_store`, `role_update`, `role_remove`.
+- **My profile** (`/settings/profile`): edit own name, email, location, skills, education and notes,
+  and change password (verifies the current password, then signs the session out).
+- **General settings** (`/settings/more`): numeric key/value settings (`name` stored snake_cased);
+  each edit appends a `setting_changelog` row (from → to, who, when).
+  Abilities: `view_settings`, `set_settings`.
+
 ---
 
 ## 6. Business rules

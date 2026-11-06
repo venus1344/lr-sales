@@ -72,7 +72,13 @@ Goal: **feature parity** with the old app (RULES.md §7 — no new features with
 - [x] Dashboard: KPI cards, recent proformas, quick links.
 - [x] Sidebar navigation with icons + breadcrumbs; fixed header and independently scrolling content.
 - [x] Print views for every document.
-- [x] 61 passing unit tests (formatting, passwords, RBAC, pricing, numbering, and zod schemas).
+- [x] 79 passing unit tests (formatting, passwords, RBAC, pricing, numbering, admin schemas, and zod schemas).
+
+### Administration
+- [x] **Users** (`/settings/users`) — list/search, create/edit with password + role assignment, block/unblock.
+- [x] **Roles** (`/settings/roles`) — list, create/edit with ability assignment (check all), delete.
+- [x] **My profile** (`/settings/profile`) — edit own profile and change password (signs out on change).
+- [x] **General settings** (`/settings/more`) — key/value settings with `setting_changelog` audit trail.
 
 ---
 
@@ -92,11 +98,6 @@ These exist in the original app and must be ported. Each is unchecked until ship
 ### Projects
 - [ ] `projects`, `project_statuses`, `project_files` models.
 - [ ] Status timeline; hardened file attachments; manager/customer/budget/time fields.
-
-### Settings & administration
-- [ ] `settings` key/value + `setting_changelog` audit (who changed what, from → to).
-- [ ] Users & roles admin (create users, assign roles/abilities).
-- [ ] User profile + change password.
 
 ### Dashboard & notifications
 - [ ] Income chart and recent projects (current dashboard is simplified).
