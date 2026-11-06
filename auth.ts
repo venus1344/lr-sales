@@ -13,6 +13,9 @@ const credentialsSchema = z.object({
 export const { handlers, auth, signIn, signOut } = NextAuth({
   session: { strategy: 'jwt' },
   pages: { signIn: '/signin' },
+  // Self-hosted deployment: trust the incoming Host header (Auth.js rejects
+  // unknown hosts in production unless this is set or AUTH_URL is configured).
+  trustHost: true,
   providers: [
     Credentials({
       credentials: {

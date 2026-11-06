@@ -1,12 +1,12 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
 
 import { requireAbility } from '@/lib/auth/guard'
 import { hashPassword } from '@/lib/auth/password'
 import { prisma } from '@/lib/prisma'
 import { userCreateSchema, userPasswordResetSchema, userUpdateSchema } from '@/lib/validation/user'
+import { redirectWithToast } from '@/lib/toast'
 
 export type UserFormState = { error?: string }
 
@@ -60,7 +60,7 @@ export async function createUser(
   }
 
   revalidatePath('/settings/users')
-  redirect('/settings/users')
+  return redirectWithToast('/settings/users', 'User created')
 }
 
 export async function updateUser(
@@ -122,7 +122,7 @@ export async function updateUser(
   ])
 
   revalidatePath('/settings/users')
-  redirect('/settings/users')
+  return redirectWithToast('/settings/users', 'User updated')
 }
 
 async function setActive(id: string, active: boolean): Promise<void> {

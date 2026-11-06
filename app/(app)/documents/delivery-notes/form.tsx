@@ -1,6 +1,8 @@
 'use client'
 
+import Link from 'next/link'
 import { useActionState, useState } from 'react'
+import { useFormToast } from '@/components/toast'
 
 import { Combobox, type ComboboxOption } from '@/components/combobox'
 import { IconTrash } from '@/components/icons'
@@ -59,6 +61,7 @@ export function DeliveryNoteForm({ dnote, items }: DeliveryNoteFormProps) {
     action,
     { error: undefined },
   )
+  useFormToast(state)
 
   const [lines, setLines] = useState<DNoteLine[]>(dnote?.lines ?? [])
   const [labels, setLabels] = useState<Record<string, string>>(() =>
@@ -228,7 +231,7 @@ export function DeliveryNoteForm({ dnote, items }: DeliveryNoteFormProps) {
         <button type="submit" disabled={pending} className="sk-btn">
           Save
         </button>
-        <a href="/documents/delivery-notes" className="sk-link">Cancel</a>
+        <Link href={dnote?.id ? `/documents/delivery-notes/${dnote.id}` : '/documents/delivery-notes'} className="sk-link">Cancel</Link>
       </div>
     </form>
   )

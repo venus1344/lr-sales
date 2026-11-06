@@ -1,11 +1,11 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
 
 import { requireAbility } from '@/lib/auth/guard'
 import { prisma } from '@/lib/prisma'
 import { roleSchema } from '@/lib/validation/role'
+import { redirectWithToast } from '@/lib/toast'
 
 export type RoleFormState = { error?: string }
 
@@ -50,7 +50,7 @@ export async function createRole(
   })
 
   revalidatePath('/settings/roles')
-  redirect('/settings/roles')
+  return redirectWithToast('/settings/roles', 'Role created')
 }
 
 export async function updateRole(
@@ -90,7 +90,7 @@ export async function updateRole(
   ])
 
   revalidatePath('/settings/roles')
-  redirect('/settings/roles')
+  return redirectWithToast('/settings/roles', 'Role updated')
 }
 
 export async function deleteRole(id: string): Promise<void> {

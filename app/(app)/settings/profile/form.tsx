@@ -1,6 +1,7 @@
 'use client'
 
 import { useActionState } from 'react'
+import { useFormToast } from '@/components/toast'
 
 import { changePassword, updateProfile, type ProfileFormState } from './actions'
 
@@ -29,6 +30,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
   const [state, formAction, pending] = useActionState<ProfileFormState, FormData>(updateProfile, {
     error: undefined,
   })
+  useFormToast(state)
 
   return (
     <form action={formAction} className="space-y-4">
@@ -74,6 +76,7 @@ export function PasswordForm() {
   const [state, formAction, pending] = useActionState<ProfileFormState, FormData>(changePassword, {
     error: undefined,
   })
+  useFormToast(state)
 
   return (
     <form action={formAction} className="space-y-4">

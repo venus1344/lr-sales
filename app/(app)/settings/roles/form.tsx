@@ -1,6 +1,7 @@
 'use client'
 
 import { useActionState, useRef, useState } from 'react'
+import { useFormToast } from '@/components/toast'
 
 import { createRole, updateRole, type RoleFormState } from './actions'
 
@@ -22,6 +23,7 @@ export function RoleForm({ abilities, role }: RoleFormProps) {
   const [state, formAction, pending] = useActionState<RoleFormState, FormData>(action, {
     error: undefined,
   })
+  useFormToast(state)
 
   const formRef = useRef<HTMLFormElement>(null)
   const [allChecked, setAllChecked] = useState(false)

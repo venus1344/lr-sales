@@ -1,11 +1,11 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
 
 import { requireAbility } from '@/lib/auth/guard'
 import { prisma } from '@/lib/prisma'
 import { deliveryNoteSchema } from '@/lib/validation/delivery-note'
+import { redirectWithToast } from '@/lib/toast'
 
 export type DeliveryNoteFormState = { error?: string }
 
@@ -68,7 +68,7 @@ export async function createDeliveryNote(
   })
 
   revalidatePath('/documents/delivery-notes')
-  redirect('/documents/delivery-notes')
+  return redirectWithToast('/documents/delivery-notes', 'Delivery note created')
 }
 
 export async function updateDeliveryNote(
@@ -113,13 +113,22 @@ export async function updateDeliveryNote(
   ])
 
   revalidatePath('/documents/delivery-notes')
-  redirect('/documents/delivery-notes')
+  return redirectWithToast(`/documents/delivery-notes/${id}`, 'Delivery note updated')
 }
 
 export async function deleteDeliveryNote(id: string): Promise<void> {
   await requireAbility('dnote_remove')
 
-  await prisma.delivery_notes.delete({ where: { id: BigInt(id) } })
+  const dnoteId = BigInt(id)
+  try {
+    await prisma.$transaction([
+      prisma.delivery_note_items.deleteMany({ where: { dnote_id: dnoteId } }),
+      prisma.delivery_notes.delete({ where: { id: dnoteId } }),
+    ])
+  } catch {
+    return redirectWithToast('/documents/delivery-notes', 'Could not delete the delivery note', 'error')
+  }
 
   revalidatePath('/documents/delivery-notes')
+  return redirectWithToast('/documents/delivery-notes', 'Delivery note deleted')
 }

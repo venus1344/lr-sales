@@ -1,6 +1,8 @@
 'use client'
 
+import Link from 'next/link'
 import { useActionState, useState } from 'react'
+import { useFormToast } from '@/components/toast'
 
 import { Combobox, type ComboboxOption } from '@/components/combobox'
 import { IconTrash } from '@/components/icons'
@@ -68,6 +70,7 @@ export function ProformaForm({ proforma, items }: ProformaFormProps) {
     action,
     { error: undefined },
   )
+  useFormToast(state)
 
   const [lines, setLines] = useState<ProformaLine[]>(proforma?.lines ?? [])
   const [labels, setLabels] = useState<Record<string, string>>(() =>
@@ -268,7 +271,7 @@ export function ProformaForm({ proforma, items }: ProformaFormProps) {
         <button type="submit" disabled={pending} className="sk-btn">
           Save
         </button>
-        <a href="/documents/proformas" className="sk-link">Cancel</a>
+        <Link href={proforma ? `/documents/proformas/${proforma.id}` : '/documents/proformas'} className="sk-link">Cancel</Link>
       </div>
     </form>
   )

@@ -1,6 +1,7 @@
 'use client'
 
 import { useActionState } from 'react'
+import { useFormToast } from '@/components/toast'
 
 import { createSetting, updateSetting, type SettingFormState } from './actions'
 
@@ -8,6 +9,7 @@ export function SettingForm() {
   const [state, formAction, pending] = useActionState<SettingFormState, FormData>(createSetting, {
     error: undefined,
   })
+  useFormToast(state)
 
   return (
     <form action={formAction} className="space-y-4">
@@ -40,6 +42,7 @@ export function SettingEditForm({
   const [state, formAction, pending] = useActionState<SettingFormState, FormData>(action, {
     error: undefined,
   })
+  useFormToast(state)
 
   return (
     <form action={formAction} className="space-y-4">

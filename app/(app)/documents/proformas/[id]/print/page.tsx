@@ -1,8 +1,11 @@
 import { notFound } from 'next/navigation'
 
 import { PrintButton } from '@/components/print-button'
+import { PrintDocument } from '@/components/print-document'
+import { PrintDetails, PrintFooter, PrintHeader, PrintPurpose } from '@/components/print-layout'
 import { requireAbility } from '@/lib/auth/guard'
-import { company } from '@/lib/company'
+import { formatPrintDate } from '@/lib/company'
+import { formatTin, formatVrn } from '@/lib/format'
 import { calculateTotals } from '@/lib/pricing'
 import { prisma } from '@/lib/prisma'
 
@@ -32,62 +35,60 @@ export default async function PrintProformaPage({
       withholdingRate: Number(proforma.withholding_tax ?? 0) / 100,
       laborCharge: Number(proforma.labor_charge),
       discount: 0,
+      advance: Number(proforma.advance),
     },
   )
 
   return (
-    <div className="mx-auto max-w-3xl p-6">
-      <div className="mb-4 flex justify-end">
+    <div className="print-page">
+      <div className="no-print mb-3 flex justify-end">
         <PrintButton />
       </div>
 
-      <div className="print-document sk-card p-8 text-sm">
-        <div className="flex justify-between border-b border-gray-200 pb-4">
-          <div>
-            <h1 className="text-lg font-bold">{company.name}</h1>
-            <p className="text-gray-500">{company.address}</p>
-            <p className="text-gray-500">{company.contact}</p>
-          </div>
-          <div className="text-right">
-            <h2 className="text-lg font-bold">PROFORMA</h2>
-            <p className="font-medium">{proforma.notes}</p>
-            <p className="text-gray-500">{proforma.date.toISOString().slice(0, 10)}</p>
-          </div>
-        </div>
+      <PrintDocument>
+        <PrintHeader
+          documentType="Proforma Invoice"
+          number={proforma.notes ?? ''}
+          date={formatPrintDate(proforma.date)}
+        />
 
-        <div className="mt-4 grid grid-cols-2 gap-4">
-          <div>
-            <p className="text-xs uppercase text-gray-400">Bill to</p>
-            <p className="font-medium">{proforma.name}</p>
-            {proforma.location ? <p>{proforma.location}</p> : null}
-            {proforma.contact ? <p>{proforma.contact}</p> : null}
-            {proforma.tin ? <p>TIN: {proforma.tin}</p> : null}
-            {proforma.vrn ? <p>VRN: {proforma.vrn}</p> : null}
-          </div>
-          <div className="text-right">
-            <p className="text-xs uppercase text-gray-400">Purpose</p>
-            <p>{proforma.for}</p>
-          </div>
-        </div>
+        <PrintDetails
+          heading="Customer"
+          lines={[
+            proforma.name,
+            proforma.postal
+              ? `BOX ${proforma.postal}, ${proforma.location ?? ''}`
+              : proforma.location,
+            proforma.contact,
+            formatTin(proforma.tin) ? `TIN: ${formatTin(proforma.tin)}` : null,
+            formatVrn(proforma.vrn) ? `VRN: ${formatVrn(proforma.vrn)}` : null,
+          ]}
+        />
 
-        <table className="mt-6 w-full">
+        <PrintPurpose purpose={proforma.for} />
+
+        <table className="print-items w-full border-collapse text-[9px]">
           <thead>
-            <tr className="border-b border-gray-200 text-left text-gray-500">
-              <th className="py-2">Item</th>
-              <th className="py-2">Specification</th>
-              <th className="py-2 text-center">Qty</th>
-              <th className="py-2 text-right">Price</th>
-              <th className="py-2 text-right">Amount</th>
+            <tr style={{ backgroundColor: '#f2f2f2' }}>
+              <th className="border px-1 py-1 text-left">No</th>
+              <th className="border px-1 py-1 text-left">Item Name</th>
+              <th className="border px-1 py-1 text-left">Description</th>
+              <th className="border px-1 py-1 text-left">Unit Measure</th>
+              <th className="border px-1 py-1 text-right">Quantity</th>
+              <th className="border px-1 py-1 text-right">Unit Cost</th>
+              <th className="border px-1 py-1 text-right">Amount</th>
             </tr>
           </thead>
           <tbody>
-            {proforma.proforma_items.map((line) => (
-              <tr key={String(line.id)} className="border-b border-gray-100">
-                <td className="py-2">{line.items?.name}</td>
-                <td className="py-2">{line.specification}</td>
-                <td className="py-2 text-center">{line.quantity}</td>
-                <td className="py-2 text-right">{Number(line.price).toLocaleString()}</td>
-                <td className="py-2 text-right">
+            {proforma.proforma_items.map((line, index) => (
+              <tr key={String(line.id)}>
+                <td className="border px-1 py-1">{index + 1}</td>
+                <td className="border px-1 py-1">{line.items?.name}</td>
+                <td className="border px-1 py-1">{line.specification}</td>
+                <td className="border px-1 py-1">{line.unit_measure}</td>
+                <td className="border px-1 py-1 text-right">{line.quantity}</td>
+                <td className="border px-1 py-1 text-right">{Number(line.price).toLocaleString()}</td>
+                <td className="border px-1 py-1 text-right">
                   {(Number(line.price) * line.quantity).toLocaleString()}
                 </td>
               </tr>
@@ -95,19 +96,8 @@ export default async function PrintProformaPage({
           </tbody>
         </table>
 
-        <div className="mt-4 flex justify-end">
-          <div className="w-64 space-y-1">
-            <div className="flex justify-between"><span>Subtotal</span><span>{totals.subtotal.toLocaleString()}</span></div>
-            <div className="flex justify-between"><span>VAT ({Number(proforma.vat)}%)</span><span>{totals.vat.toLocaleString()}</span></div>
-            <div className="flex justify-between"><span>Withholding</span><span>{totals.withholding.toLocaleString()}</span></div>
-            <div className="flex justify-between border-t border-gray-200 pt-1 font-bold"><span>Total</span><span>{totals.total.toLocaleString()}</span></div>
-          </div>
-        </div>
-
-        <p className="mt-8 border-t border-gray-200 pt-4 text-xs text-gray-500">
-          {company.name} · {company.address} · {company.contact}
-        </p>
-      </div>
+        <PrintFooter showBank showTotals totals={totals} currency={proforma.currency} />
+      </PrintDocument>
     </div>
   )
 }

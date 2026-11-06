@@ -1,11 +1,11 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
 
 import { requireAbility } from '@/lib/auth/guard'
 import { prisma } from '@/lib/prisma'
 import { accountSchema } from '@/lib/validation/account'
+import { redirectWithToast } from '@/lib/toast'
 
 export type AccountFormState = { error?: string }
 
@@ -34,7 +34,7 @@ export async function createIncomeAccount(
 
   revalidatePath('/settings/accounts')
   revalidatePath('/settings/accounts/income')
-  redirect('/settings/accounts/income')
+  return redirectWithToast('/settings/accounts/income', 'Income account created')
 }
 
 export async function updateIncomeAccount(
@@ -56,7 +56,7 @@ export async function updateIncomeAccount(
 
   revalidatePath('/settings/accounts')
   revalidatePath('/settings/accounts/income')
-  redirect('/settings/accounts/income')
+  return redirectWithToast('/settings/accounts/income', 'Income account updated')
 }
 
 export async function deleteIncomeAccount(id: string): Promise<void> {

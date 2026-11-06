@@ -28,6 +28,19 @@ const sections = [
     items: [{ href: '/', label: 'Dashboard', icon: IconDashboard }],
   },
   {
+    title: 'Documents',
+    items: [
+      { href: '/documents/proformas', label: 'Proformas', icon: IconProformas },
+      { href: '/documents/invoices', label: 'Invoices', icon: IconInvoices },
+      { href: '/documents/delivery-notes', label: 'Delivery notes', icon: IconDeliveryNotes },
+      { href: '/documents/lpos', label: 'LPOs', icon: IconLpos },
+    ],
+  },
+  {
+    title: 'Finance',
+    items: [{ href: '/expenses', label: 'Expenses', icon: IconExpenses }],
+  },
+  {
     title: 'Settings',
     items: [
       { href: '/settings/customers', label: 'Customers', icon: IconCustomers },
@@ -37,19 +50,6 @@ const sections = [
       { href: '/settings/currencies', label: 'Currencies', icon: IconCurrencies },
       { href: '/settings/packages', label: 'Packages', icon: IconPackages },
       { href: '/settings/accounts', label: 'Accounts', icon: IconAccounts },
-    ],
-  },
-  {
-    title: 'Finance',
-    items: [{ href: '/expenses', label: 'Expenses', icon: IconExpenses }],
-  },
-  {
-    title: 'Documents',
-    items: [
-      { href: '/documents/proformas', label: 'Proformas', icon: IconProformas },
-      { href: '/documents/invoices', label: 'Invoices', icon: IconInvoices },
-      { href: '/documents/delivery-notes', label: 'Delivery notes', icon: IconDeliveryNotes },
-      { href: '/documents/lpos', label: 'LPOs', icon: IconLpos },
     ],
   },
 ]
@@ -62,7 +62,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="app-shell flex h-screen bg-gray-50">
       <aside className="no-print hidden w-60 flex-col border-r border-gray-200 bg-white md:flex">
         <div className="border-b border-gray-100 px-5 py-4">
           <p className="text-base font-bold">WeLink Sales</p>
@@ -123,7 +123,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
         </div>
       </aside>
 
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="app-content flex min-w-0 flex-1 flex-col">
         <header className="no-print flex items-center justify-between gap-4 border-b border-gray-200 bg-white px-6 py-3">
           <Breadcrumbs />
           <div className="flex items-center gap-4">
@@ -132,7 +132,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
           </div>
         </header>
 
-        <main className="min-h-0 min-w-0 flex-1 overflow-y-auto">{children}</main>
+        <main className="app-main min-h-0 min-w-0 flex-1 overflow-y-auto">{children}</main>
       </div>
     </div>
   )

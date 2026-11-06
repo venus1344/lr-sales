@@ -2,12 +2,10 @@ import Link from 'next/link'
 
 import { ClickableRow } from '@/components/clickable-row'
 import { Pagination } from '@/components/pagination'
-import { RowActions } from '@/components/row-actions'
 import { SearchForm } from '@/components/search-form'
 import { requireAbility } from '@/lib/auth/guard'
 import { calculateTotals } from '@/lib/pricing'
 import { prisma } from '@/lib/prisma'
-import { deleteLpo } from './actions'
 
 export const instant = false
 
@@ -58,13 +56,12 @@ export default async function LposPage({
               <th className="px-4 py-2">Supplier</th>
               <th className="px-4 py-2">Date</th>
               <th className="px-4 py-2 text-right">Total</th>
-              <th className="px-4 py-2 text-right">Actions</th>
             </tr>
           </thead>
           <tbody>
             {lpos.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-4 py-6 text-center text-gray-400">No LPOs found.</td>
+                <td colSpan={4} className="px-4 py-6 text-center text-gray-400">No LPOs found.</td>
               </tr>
             ) : (
               lpos.map((lpo) => {
@@ -82,37 +79,11 @@ export default async function LposPage({
                 ).total
 
                 return (
-                  <ClickableRow key={String(lpo.id)} href={`/documents/lpos/${lpo.id}/edit`}>
+                  <ClickableRow key={String(lpo.id)} href={`/documents/lpos/${lpo.id}`}>
                     <td className="px-4 py-2 font-medium">{lpo.reference_no}</td>
                     <td className="px-4 py-2">{lpo.suppliers?.name}</td>
                     <td className="px-4 py-2">{lpo.date.toISOString().slice(0, 10)}</td>
                     <td className="px-4 py-2 text-right">{total.toLocaleString()}</td>
-                    <td className="px-4 py-2 text-right">
-                      <RowActions
-                        actions={[
-                          {
-                            kind: 'link',
-                            label: 'Print',
-                            icon: 'print',
-                            href: `/documents/lpos/${lpo.id}/print`,
-                          },
-                          {
-                            kind: 'link',
-                            label: 'Edit',
-                            icon: 'edit',
-                            href: `/documents/lpos/${lpo.id}/edit`,
-                          },
-                          {
-                            kind: 'submit',
-                            label: 'Delete',
-                            icon: 'trash',
-                            danger: true,
-                            submit: deleteLpo,
-                            id: String(lpo.id),
-                          },
-                        ]}
-                      />
-                    </td>
                   </ClickableRow>
                 )
               })

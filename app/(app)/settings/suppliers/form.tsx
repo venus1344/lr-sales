@@ -1,6 +1,7 @@
 'use client'
 
 import { useActionState } from 'react'
+import { useFormToast } from '@/components/toast'
 
 import { createSupplier, updateSupplier, type SupplierFormState } from './actions'
 
@@ -29,6 +30,7 @@ export function SupplierForm({ supplier }: SupplierFormProps) {
     action,
     { error: undefined },
   )
+  useFormToast(state)
 
   const input = field()
 

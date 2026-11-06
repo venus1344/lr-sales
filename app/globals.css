@@ -257,8 +257,73 @@ body {
   cursor: not-allowed;
 }
 
-/* Printable document */
+/* A4 print sheet (screen preview + print) */
+.print-page {
+  width: 210mm;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 1rem 0;
+}
+
+.print-document {
+  display: block;
+  width: 100%;
+  min-height: 297mm;
+  padding: 10mm;
+  box-sizing: border-box;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(17, 24, 39, 0.08);
+}
+
+/* Footer-at-bottom layout, only when the document fits one page
+   (the client adds `.fit` after measuring). */
+.print-document.fit {
+  display: flex;
+  flex-direction: column;
+}
+
+.print-document.fit > * {
+  flex-shrink: 0;
+}
+
+/* Keep blocks intact across pages. */
+.print-header,
+.print-footer {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.print-footer {
+  margin-top: 4mm;
+}
+
+.print-document.fit .print-footer {
+  margin-top: auto;
+}
+
+.print-items thead {
+  display: table-header-group;
+}
+
+.print-items tr {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
 @media print {
+  @page {
+    size: A4;
+    margin: 10mm;
+  }
+
+  /* Force background/foreground colours into the saved PDF. */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
   .no-print {
     display: none !important;
   }
@@ -267,10 +332,44 @@ body {
     background: #ffffff;
   }
 
+  /* Let the document paginate: the app shell's fixed height and the main
+     area's overflow would otherwise clip print content to one page. */
+  .app-shell,
+  .app-content,
+  .app-main {
+    display: block !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+
+  .print-page {
+    width: auto;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
+
   .print-document {
+    /* Flex containers do not paginate in Chrome; use block flow so the items
+       table breaks across pages and nothing is clipped. */
+    display: block;
+    width: auto;
+    max-width: none;
+    min-height: 276mm; /* A4 (297mm) minus 2 × 10mm margins, with 1mm slack */
+    padding: 0;
     border: none !important;
-    box-shadow: none !important;
     border-radius: 0 !important;
-    padding: 0 !important;
+    box-shadow: none !important;
+  }
+
+  /* Single-page documents: pin the footer to the page bottom. */
+  .print-document.fit {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .print-document.fit .print-footer {
+    margin-top: auto;
   }
 }

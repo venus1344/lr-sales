@@ -1,11 +1,11 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
 
 import { requireAbility } from '@/lib/auth/guard'
 import { prisma } from '@/lib/prisma'
 import { packageSchema } from '@/lib/validation/package'
+import { redirectWithToast } from '@/lib/toast'
 
 export type PackageFormState = { error?: string }
 
@@ -34,7 +34,7 @@ export async function createPackage(
   })
 
   revalidatePath('/settings/packages')
-  redirect('/settings/packages')
+  return redirectWithToast('/settings/packages', 'Package created')
 }
 
 export async function updatePackage(
@@ -55,7 +55,7 @@ export async function updatePackage(
   })
 
   revalidatePath('/settings/packages')
-  redirect('/settings/packages')
+  return redirectWithToast('/settings/packages', 'Package updated')
 }
 
 export async function deletePackage(id: string): Promise<void> {

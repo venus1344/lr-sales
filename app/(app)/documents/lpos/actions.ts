@@ -1,12 +1,12 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
 
 import { requireAbility } from '@/lib/auth/guard'
 import { DocumentPrefix, documentNumber, nextSequence } from '@/lib/numbering'
 import { prisma } from '@/lib/prisma'
 import { lpoSchema } from '@/lib/validation/lpo'
+import { redirectWithToast } from '@/lib/toast'
 
 export type LpoFormState = { error?: string }
 
@@ -74,7 +74,7 @@ export async function createLpo(
   })
 
   revalidatePath('/documents/lpos')
-  redirect('/documents/lpos')
+  return redirectWithToast('/documents/lpos', 'LPO created')
 }
 
 export async function updateLpo(
@@ -119,13 +119,22 @@ export async function updateLpo(
   ])
 
   revalidatePath('/documents/lpos')
-  redirect('/documents/lpos')
+  return redirectWithToast(`/documents/lpos/${id}`, 'LPO updated')
 }
 
 export async function deleteLpo(id: string): Promise<void> {
   await requireAbility('lpo_remove')
 
-  await prisma.local_purchase_orders.delete({ where: { id: BigInt(id) } })
+  const lpoId = BigInt(id)
+  try {
+    await prisma.$transaction([
+      prisma.local_purchase_order_items.deleteMany({ where: { lpo_id: lpoId } }),
+      prisma.local_purchase_orders.delete({ where: { id: lpoId } }),
+    ])
+  } catch {
+    return redirectWithToast('/documents/lpos', 'Could not delete the LPO', 'error')
+  }
 
   revalidatePath('/documents/lpos')
+  return redirectWithToast('/documents/lpos', 'LPO deleted')
 }

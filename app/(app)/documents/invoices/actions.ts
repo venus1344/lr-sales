@@ -1,12 +1,12 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
 
 import { requireAbility } from '@/lib/auth/guard'
 import { DocumentPrefix, documentNumber, nextSequence } from '@/lib/numbering'
 import { prisma } from '@/lib/prisma'
 import { invoiceSchema } from '@/lib/validation/invoice'
+import { redirectWithToast } from '@/lib/toast'
 
 export type InvoiceFormState = { error?: string }
 
@@ -92,7 +92,7 @@ export async function createInvoice(
   })
 
   revalidatePath('/documents/invoices')
-  redirect('/documents/invoices')
+  return redirectWithToast('/documents/invoices', 'Invoice created')
 }
 
 export async function updateInvoice(
@@ -146,13 +146,30 @@ export async function updateInvoice(
   ])
 
   revalidatePath('/documents/invoices')
-  redirect('/documents/invoices')
+  return redirectWithToast(`/documents/invoices/${id}`, 'Invoice updated')
 }
 
 export async function deleteInvoice(id: string): Promise<void> {
   await requireAbility('invoice_remove')
 
-  await prisma.invoices.delete({ where: { id: BigInt(id) } })
+  const invoiceId = BigInt(id)
+  try {
+    await prisma.$transaction([
+      prisma.invoice_items.deleteMany({ where: { invoice_id: invoiceId } }),
+      prisma.delivery_notes.updateMany({
+        where: { invoice_id: invoiceId },
+        data: { invoice_id: null },
+      }),
+      prisma.internet_invoice_packages.updateMany({
+        where: { invoice_id: invoiceId },
+        data: { invoice_id: null },
+      }),
+      prisma.invoices.delete({ where: { id: invoiceId } }),
+    ])
+  } catch {
+    return redirectWithToast('/documents/invoices', 'Could not delete the invoice', 'error')
+  }
 
   revalidatePath('/documents/invoices')
+  return redirectWithToast('/documents/invoices', 'Invoice deleted')
 }

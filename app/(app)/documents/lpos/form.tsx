@@ -1,6 +1,8 @@
 'use client'
 
+import Link from 'next/link'
 import { useActionState, useState } from 'react'
+import { useFormToast } from '@/components/toast'
 
 import { Combobox, type ComboboxOption } from '@/components/combobox'
 import { IconTrash } from '@/components/icons'
@@ -57,6 +59,7 @@ export function LpoForm({ lpo, suppliers, items }: LpoFormProps) {
     action,
     { error: undefined },
   )
+  useFormToast(state)
 
   const [lines, setLines] = useState<LpoLine[]>(lpo?.lines ?? [])
   const [labels, setLabels] = useState<Record<string, string>>(() =>
@@ -206,7 +209,7 @@ export function LpoForm({ lpo, suppliers, items }: LpoFormProps) {
         <button type="submit" disabled={pending} className="sk-btn">
           Save
         </button>
-        <a href="/documents/lpos" className="sk-link">Cancel</a>
+        <Link href={lpo?.id ? `/documents/lpos/${lpo.id}` : '/documents/lpos'} className="sk-link">Cancel</Link>
       </div>
     </form>
   )

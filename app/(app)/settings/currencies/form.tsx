@@ -1,6 +1,7 @@
 'use client'
 
 import { useActionState } from 'react'
+import { useFormToast } from '@/components/toast'
 
 import { createCurrency, updateCurrency, type CurrencyFormState } from './actions'
 
@@ -23,6 +24,7 @@ export function CurrencyForm({ currency }: CurrencyFormProps) {
     action,
     { error: undefined },
   )
+  useFormToast(state)
 
   return (
     <form action={formAction} className="space-y-4">
