@@ -1,29 +1,49 @@
 import Link from 'next/link'
 
+import { Pagination } from '@/components/pagination'
+import { SearchForm } from '@/components/search-form'
 import { requireAbility } from '@/lib/auth/guard'
 import { prisma } from '@/lib/prisma'
 import { deleteItem } from './actions'
 
 export const instant = false
 
-export default async function ItemsPage() {
+const PAGE_SIZE = 15
+
+export default async function ItemsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; page?: string }>
+}) {
   await requireAbility('item_list')
 
-  const items = await prisma.items.findMany({
-    orderBy: { name: 'asc' },
-    include: { item_categories: true },
-  })
+  const { q = '', page = '1' } = await searchParams
+  const pageNum = Math.max(1, Number(page) || 1)
+  const where = q ? { name: { contains: q } } : undefined
+
+  const [items, total] = await Promise.all([
+    prisma.items.findMany({
+      where,
+      orderBy: { name: 'asc' },
+      skip: (pageNum - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
+      include: { item_categories: true },
+    }),
+    prisma.items.count({ where }),
+  ])
 
   return (
     <main className="mx-auto max-w-4xl px-4 py-8">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Items</h1>
-        <Link href="/settings/items/new" className="sk-btn">
-          New item
-        </Link>
+        <Link href="/settings/items/new" className="sk-btn">New item</Link>
       </div>
 
-      <div className="sk-card mt-6 overflow-hidden">
+      <div className="mt-4">
+        <SearchForm placeholder="Search items…" defaultValue={q} />
+      </div>
+
+      <div className="sk-card mt-4 overflow-hidden">
         <table className="w-full text-sm">
           <thead>
             <tr className="sk-table-head text-left">
@@ -39,7 +59,7 @@ export default async function ItemsPage() {
           <tbody>
             {items.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-4 py-6 text-center text-gray-400">No items yet.</td>
+                <td colSpan={7} className="px-4 py-6 text-center text-gray-400">No items found.</td>
               </tr>
             ) : (
               items.map((item) => (
@@ -49,9 +69,9 @@ export default async function ItemsPage() {
                   <td className="px-4 py-2">{item.unit_measure}</td>
                   <td className="px-4 py-2 text-right">{item.price.toString()}</td>
                   <td className="px-4 py-2">{item.vat ? 'Yes' : 'No'}</td>
-                  <td className="px-4 py-2"><span className={item.active ? 'sk-badge sk-badge-on' : 'sk-badge sk-badge-off'}>{item.active ? 'Active' : 'Inactive'}</span></td>
+                  <td className="px-4 py-2">{item.active ? 'Active' : 'Inactive'}</td>
                   <td className="px-4 py-2 text-right">
-                    <Link href={`/settings/items/${item.id}/edit`} className="mr-3 sk-link">Edit</Link>
+                    <Link href={`/settings/items/${item.id}/edit`} className="sk-link mr-3">Edit</Link>
                     <form action={deleteItem.bind(null, String(item.id))} className="inline">
                       <button type="submit" className="sk-link-danger">Delete</button>
                     </form>
@@ -61,6 +81,7 @@ export default async function ItemsPage() {
             )}
           </tbody>
         </table>
+        <Pagination page={pageNum} total={total} pageSize={PAGE_SIZE} query={q} />
       </div>
     </main>
   )

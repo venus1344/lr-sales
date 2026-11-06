@@ -1,5 +1,7 @@
 import Link from 'next/link'
 
+import { Pagination } from '@/components/pagination'
+import { SearchForm } from '@/components/search-form'
 import { requireAbility } from '@/lib/auth/guard'
 import { calculateTotals } from '@/lib/pricing'
 import { prisma } from '@/lib/prisma'
@@ -7,13 +9,31 @@ import { deleteProforma } from './actions'
 
 export const instant = false
 
-export default async function ProformasPage() {
+const PAGE_SIZE = 15
+
+export default async function ProformasPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; page?: string }>
+}) {
   await requireAbility('proforma_list')
 
-  const proformas = await prisma.proformas.findMany({
-    orderBy: { id: 'desc' },
-    include: { proforma_items: true },
-  })
+  const { q = '', page = '1' } = await searchParams
+  const pageNum = Math.max(1, Number(page) || 1)
+  const where = q
+    ? { OR: [{ name: { contains: q } }, { notes: { contains: q } }] }
+    : undefined
+
+  const [proformas, total] = await Promise.all([
+    prisma.proformas.findMany({
+      where,
+      orderBy: { id: 'desc' },
+      skip: (pageNum - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
+      include: { proforma_items: true },
+    }),
+    prisma.proformas.count({ where }),
+  ])
 
   return (
     <main className="mx-auto max-w-4xl px-4 py-8">
@@ -24,7 +44,11 @@ export default async function ProformasPage() {
         </Link>
       </div>
 
-      <div className="sk-card mt-6 overflow-hidden">
+      <div className="mt-4">
+        <SearchForm placeholder="Search by number or customer…" defaultValue={q} />
+      </div>
+
+      <div className="sk-card mt-4 overflow-hidden">
         <table className="w-full text-sm">
           <thead>
             <tr className="sk-table-head text-left">
@@ -38,7 +62,7 @@ export default async function ProformasPage() {
           <tbody>
             {proformas.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-4 py-6 text-center text-gray-400">No proformas yet.</td>
+                <td colSpan={5} className="px-4 py-6 text-center text-gray-400">No proformas found.</td>
               </tr>
             ) : (
               proformas.map((proforma) => {
@@ -81,6 +105,7 @@ export default async function ProformasPage() {
             )}
           </tbody>
         </table>
+        <Pagination page={pageNum} total={total} pageSize={PAGE_SIZE} query={q} />
       </div>
     </main>
   )

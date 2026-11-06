@@ -1,5 +1,7 @@
 import Link from 'next/link'
 
+import { Pagination } from '@/components/pagination'
+import { SearchForm } from '@/components/search-form'
 import { formatTin } from '@/lib/format'
 import { requireAbility } from '@/lib/auth/guard'
 import { prisma } from '@/lib/prisma'
@@ -7,21 +9,41 @@ import { deleteCustomer } from './actions'
 
 export const instant = false
 
-export default async function CustomersPage() {
+const PAGE_SIZE = 15
+
+export default async function CustomersPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; page?: string }>
+}) {
   await requireAbility('customer_list')
 
-  const customers = await prisma.customers.findMany({ orderBy: { name: 'asc' } })
+  const { q = '', page = '1' } = await searchParams
+  const pageNum = Math.max(1, Number(page) || 1)
+  const where = q ? { name: { contains: q } } : undefined
+
+  const [customers, total] = await Promise.all([
+    prisma.customers.findMany({
+      where,
+      orderBy: { name: 'asc' },
+      skip: (pageNum - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
+    }),
+    prisma.customers.count({ where }),
+  ])
 
   return (
     <main className="mx-auto max-w-4xl px-4 py-8">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Customers</h1>
-        <Link href="/settings/customers/new" className="sk-btn">
-          New customer
-        </Link>
+        <Link href="/settings/customers/new" className="sk-btn">New customer</Link>
       </div>
 
-      <div className="sk-card mt-6 overflow-hidden">
+      <div className="mt-4">
+        <SearchForm placeholder="Search customers…" defaultValue={q} />
+      </div>
+
+      <div className="sk-card mt-4 overflow-hidden">
         <table className="w-full text-sm">
           <thead>
             <tr className="sk-table-head text-left">
@@ -36,7 +58,7 @@ export default async function CustomersPage() {
           <tbody>
             {customers.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-4 py-6 text-center text-gray-400">No customers yet.</td>
+                <td colSpan={6} className="px-4 py-6 text-center text-gray-400">No customers found.</td>
               </tr>
             ) : (
               customers.map((customer) => (
@@ -45,9 +67,9 @@ export default async function CustomersPage() {
                   <td className="px-4 py-2">{customer.location}</td>
                   <td className="px-4 py-2">{customer.contact}</td>
                   <td className="px-4 py-2">{formatTin(customer.tin)}</td>
-                  <td className="px-4 py-2"><span className={customer.status ? 'sk-badge sk-badge-on' : 'sk-badge sk-badge-off'}>{customer.status ? 'Active' : 'Inactive'}</span></td>
+                  <td className="px-4 py-2">{customer.status ? 'Active' : 'Inactive'}</td>
                   <td className="px-4 py-2 text-right">
-                    <Link href={`/settings/customers/${customer.id}/edit`} className="mr-3 sk-link">Edit</Link>
+                    <Link href={`/settings/customers/${customer.id}/edit`} className="sk-link mr-3">Edit</Link>
                     <form action={deleteCustomer.bind(null, String(customer.id))} className="inline">
                       <button type="submit" className="sk-link-danger">Delete</button>
                     </form>
@@ -57,6 +79,7 @@ export default async function CustomersPage() {
             )}
           </tbody>
         </table>
+        <Pagination page={pageNum} total={total} pageSize={PAGE_SIZE} query={q} />
       </div>
     </main>
   )

@@ -1,5 +1,7 @@
 import Link from 'next/link'
 
+import { Pagination } from '@/components/pagination'
+import { SearchForm } from '@/components/search-form'
 import { requireAbility } from '@/lib/auth/guard'
 import { calculateTotals } from '@/lib/pricing'
 import { prisma } from '@/lib/prisma'
@@ -7,13 +9,31 @@ import { deleteInvoice } from './actions'
 
 export const instant = false
 
-export default async function InvoicesPage() {
+const PAGE_SIZE = 15
+
+export default async function InvoicesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; page?: string }>
+}) {
   await requireAbility('invoice_list')
 
-  const invoices = await prisma.invoices.findMany({
-    orderBy: { id: 'desc' },
-    include: { invoice_items: true },
-  })
+  const { q = '', page = '1' } = await searchParams
+  const pageNum = Math.max(1, Number(page) || 1)
+  const where = q
+    ? { OR: [{ name: { contains: q } }, { notes: { contains: q } }] }
+    : undefined
+
+  const [invoices, total] = await Promise.all([
+    prisma.invoices.findMany({
+      where,
+      orderBy: { id: 'desc' },
+      skip: (pageNum - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
+      include: { invoice_items: true },
+    }),
+    prisma.invoices.count({ where }),
+  ])
 
   return (
     <main className="mx-auto max-w-4xl px-4 py-8">
@@ -24,7 +44,11 @@ export default async function InvoicesPage() {
         </Link>
       </div>
 
-      <div className="sk-card mt-6 overflow-hidden">
+      <div className="mt-4">
+        <SearchForm placeholder="Search by number or customer…" defaultValue={q} />
+      </div>
+
+      <div className="sk-card mt-4 overflow-hidden">
         <table className="w-full text-sm">
           <thead>
             <tr className="sk-table-head text-left">
@@ -38,7 +62,7 @@ export default async function InvoicesPage() {
           <tbody>
             {invoices.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-4 py-6 text-center text-gray-400">No invoices yet.</td>
+                <td colSpan={5} className="px-4 py-6 text-center text-gray-400">No invoices found.</td>
               </tr>
             ) : (
               invoices.map((invoice) => {
@@ -78,6 +102,7 @@ export default async function InvoicesPage() {
             )}
           </tbody>
         </table>
+        <Pagination page={pageNum} total={total} pageSize={PAGE_SIZE} query={q} />
       </div>
     </main>
   )

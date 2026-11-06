@@ -1,29 +1,48 @@
 import Link from 'next/link'
 
+import { Pagination } from '@/components/pagination'
+import { SearchForm } from '@/components/search-form'
 import { requireAbility } from '@/lib/auth/guard'
 import { prisma } from '@/lib/prisma'
 import { deletePackage } from './actions'
 
 export const instant = false
 
-export default async function PackagesPage() {
+const PAGE_SIZE = 15
+
+export default async function PackagesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; page?: string }>
+}) {
   await requireAbility('package_list')
 
-  const packages = await prisma.packages.findMany({ orderBy: { name: 'asc' } })
+  const { q = '', page = '1' } = await searchParams
+  const pageNum = Math.max(1, Number(page) || 1)
+  const where = q ? { name: { contains: q } } : undefined
+
+  const [packages, total] = await Promise.all([
+    prisma.packages.findMany({
+      where,
+      orderBy: { name: 'asc' },
+      skip: (pageNum - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
+    }),
+    prisma.packages.count({ where }),
+  ])
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-8">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Packages</h1>
-        <Link
-          href="/settings/packages/new"
-          className="sk-btn"
-        >
-          New package
-        </Link>
+        <Link href="/settings/packages/new" className="sk-btn">New package</Link>
       </div>
 
-      <div className="sk-card mt-6 overflow-hidden">
+      <div className="mt-4">
+        <SearchForm placeholder="Search packages…" defaultValue={q} />
+      </div>
+
+      <div className="sk-card mt-4 overflow-hidden">
         <table className="w-full text-sm">
           <thead>
             <tr className="sk-table-head text-left">
@@ -37,9 +56,7 @@ export default async function PackagesPage() {
           <tbody>
             {packages.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-4 py-6 text-center text-gray-400">
-                  No packages yet.
-                </td>
+                <td colSpan={5} className="px-4 py-6 text-center text-gray-400">No packages found.</td>
               </tr>
             ) : (
               packages.map((pkg) => (
@@ -47,18 +64,11 @@ export default async function PackagesPage() {
                   <td className="px-4 py-2 font-medium">{pkg.name}</td>
                   <td className="px-4 py-2">{pkg.description}</td>
                   <td className="px-4 py-2">{pkg.price}</td>
-                  <td className="px-4 py-2"><span className={pkg.status ? 'sk-badge sk-badge-on' : 'sk-badge sk-badge-off'}>{pkg.status ? 'Active' : 'Inactive'}</span></td>
+                  <td className="px-4 py-2">{pkg.status ? 'Active' : 'Inactive'}</td>
                   <td className="px-4 py-2 text-right">
-                    <Link
-                      href={`/settings/packages/${pkg.id}/edit`}
-                      className="mr-3 sk-link"
-                    >
-                      Edit
-                    </Link>
+                    <Link href={`/settings/packages/${pkg.id}/edit`} className="sk-link mr-3">Edit</Link>
                     <form action={deletePackage.bind(null, String(pkg.id))} className="inline">
-                      <button type="submit" className="sk-link-danger">
-                        Delete
-                      </button>
+                      <button type="submit" className="sk-link-danger">Delete</button>
                     </form>
                   </td>
                 </tr>
@@ -66,6 +76,7 @@ export default async function PackagesPage() {
             )}
           </tbody>
         </table>
+        <Pagination page={pageNum} total={total} pageSize={PAGE_SIZE} query={q} />
       </div>
     </main>
   )

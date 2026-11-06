@@ -1,29 +1,48 @@
 import Link from 'next/link'
 
+import { Pagination } from '@/components/pagination'
+import { SearchForm } from '@/components/search-form'
 import { requireAbility } from '@/lib/auth/guard'
 import { prisma } from '@/lib/prisma'
 import { deleteCurrency } from './actions'
 
 export const instant = false
 
-export default async function CurrenciesPage() {
+const PAGE_SIZE = 15
+
+export default async function CurrenciesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; page?: string }>
+}) {
   await requireAbility('currency_list')
 
-  const currencies = await prisma.currencies.findMany({ orderBy: { name: 'asc' } })
+  const { q = '', page = '1' } = await searchParams
+  const pageNum = Math.max(1, Number(page) || 1)
+  const where = q ? { name: { contains: q } } : undefined
+
+  const [currencies, total] = await Promise.all([
+    prisma.currencies.findMany({
+      where,
+      orderBy: { name: 'asc' },
+      skip: (pageNum - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
+    }),
+    prisma.currencies.count({ where }),
+  ])
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-8">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Currencies</h1>
-        <Link
-          href="/settings/currencies/new"
-          className="sk-btn"
-        >
-          New currency
-        </Link>
+        <Link href="/settings/currencies/new" className="sk-btn">New currency</Link>
       </div>
 
-      <div className="sk-card mt-6 overflow-hidden">
+      <div className="mt-4">
+        <SearchForm placeholder="Search currencies…" defaultValue={q} />
+      </div>
+
+      <div className="sk-card mt-4 overflow-hidden">
         <table className="w-full text-sm">
           <thead>
             <tr className="sk-table-head text-left">
@@ -37,9 +56,7 @@ export default async function CurrenciesPage() {
           <tbody>
             {currencies.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-4 py-6 text-center text-gray-400">
-                  No currencies yet.
-                </td>
+                <td colSpan={5} className="px-4 py-6 text-center text-gray-400">No currencies found.</td>
               </tr>
             ) : (
               currencies.map((currency) => (
@@ -47,18 +64,11 @@ export default async function CurrenciesPage() {
                   <td className="px-4 py-2 font-medium">{currency.code}</td>
                   <td className="px-4 py-2">{currency.name}</td>
                   <td className="px-4 py-2">{currency.rate}</td>
-                  <td className="px-4 py-2"><span className={currency.active ? 'sk-badge sk-badge-on' : 'sk-badge sk-badge-off'}>{currency.active ? 'Active' : 'Inactive'}</span></td>
+                  <td className="px-4 py-2">{currency.active ? 'Active' : 'Inactive'}</td>
                   <td className="px-4 py-2 text-right">
-                    <Link
-                      href={`/settings/currencies/${currency.id}/edit`}
-                      className="mr-3 sk-link"
-                    >
-                      Edit
-                    </Link>
+                    <Link href={`/settings/currencies/${currency.id}/edit`} className="sk-link mr-3">Edit</Link>
                     <form action={deleteCurrency.bind(null, String(currency.id))} className="inline">
-                      <button type="submit" className="sk-link-danger">
-                        Delete
-                      </button>
+                      <button type="submit" className="sk-link-danger">Delete</button>
                     </form>
                   </td>
                 </tr>
@@ -66,6 +76,7 @@ export default async function CurrenciesPage() {
             )}
           </tbody>
         </table>
+        <Pagination page={pageNum} total={total} pageSize={PAGE_SIZE} query={q} />
       </div>
     </main>
   )
