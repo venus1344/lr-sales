@@ -209,6 +209,28 @@ export function IconSettings(props: IconProps) {
   )
 }
 
+export function IconAccounts(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M4 6.5h13.5A2.5 2.5 0 0 1 20 9v8a2.5 2.5 0 0 1-2.5 2.5H6A2 2 0 0 1 4 17.5z" />
+      <path d="M4 6.5A2.5 2.5 0 0 1 6.5 4H17" />
+      <path d="M15 12h5" />
+      <circle cx="16" cy="12" r="0.8" fill="currentColor" stroke="none" />
+    </svg>
+  )
+}
+
+export function IconExpenses(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M6 3h12v18l-2-1.4-2 1.4-2-1.4-2 1.4-2-1.4z" />
+      <path d="M9 7.5h6" />
+      <path d="M9 11h6" />
+      <path d="M9 14.5h4" />
+    </svg>
+  )
+}
+
 export function IconTrash(props: IconProps) {
   return (
     <svg {...base} {...props}>
