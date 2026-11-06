@@ -123,6 +123,36 @@ export function IconLpos(props: IconProps) {
   )
 }
 
+export function IconConvert(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M4 8h12" />
+      <path d="M13 5l3 3-3 3" />
+      <path d="M20 16H8" />
+      <path d="M11 13l-3 3 3 3" />
+    </svg>
+  )
+}
+
+export function IconPrint(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M7 8V4h10v4" />
+      <rect x="3.5" y="8" width="17" height="8" rx="1.5" />
+      <path d="M7 16v4h10v-4" />
+    </svg>
+  )
+}
+
+export function IconEdit(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M12 20h9" />
+      <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z" />
+    </svg>
+  )
+}
+
 export function IconTrash(props: IconProps) {
   return (
     <svg {...base} {...props}>
