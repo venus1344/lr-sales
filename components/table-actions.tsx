@@ -18,10 +18,11 @@ export function ActionLink({
   return (
     <Link
       href={href}
-      className={`${danger ? 'sk-link-danger' : 'sk-link'} mr-3 inline-flex items-center gap-1`}
+      aria-label={label}
+      title={label}
+      className={`${danger ? 'sk-link-danger' : 'sk-link'} mr-3 inline-flex items-center`}
     >
-      <Icon className="h-3.5 w-3.5" />
-      {label}
+      <Icon className="h-4 w-4" />
     </Link>
   )
 }
@@ -30,10 +31,11 @@ export function ActionButton({ icon: Icon, label, danger }: ActionProps) {
   return (
     <button
       type="submit"
-      className={`${danger ? 'sk-link-danger' : 'sk-link'} inline-flex items-center gap-1`}
+      aria-label={label}
+      title={label}
+      className={`${danger ? 'sk-link-danger' : 'sk-link'} inline-flex items-center`}
     >
-      <Icon className="h-3.5 w-3.5" />
-      {label}
+      <Icon className="h-4 w-4" />
     </button>
   )
 }
