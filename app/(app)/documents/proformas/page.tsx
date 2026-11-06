@@ -62,6 +62,9 @@ export default async function ProformasPage() {
                     <td className="px-4 py-2">{proforma.date.toISOString().slice(0, 10)}</td>
                     <td className="px-4 py-2 text-right">{total.toLocaleString()}</td>
                     <td className="px-4 py-2 text-right">
+                      <Link href={`/documents/invoices/new?proforma=${proforma.id}`} className="sk-link mr-3">
+                        Convert
+                      </Link>
                       <Link href={`/documents/proformas/${proforma.id}/edit`} className="sk-link mr-3">
                         Edit
                       </Link>
