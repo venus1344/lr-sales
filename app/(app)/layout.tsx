@@ -15,6 +15,7 @@ const nav = [
   { href: '/settings/packages', label: 'Packages' },
   { href: '/documents/proformas', label: 'Proformas' },
   { href: '/documents/invoices', label: 'Invoices' },
+  { href: '/documents/delivery-notes', label: 'Delivery notes' },
 ]
 
 export default async function AppLayout({ children }: { children: ReactNode }) {
