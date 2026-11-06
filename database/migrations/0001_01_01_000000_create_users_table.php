@@ -17,6 +17,18 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->boolean('super')->default(false);
+            $table->boolean('active')->default(true);
+            $table->string('theme')->default('light');
+            $table->string('passport')->nullable();
+            $table->text('education')->nullable();
+            $table->text('location')->nullable();
+            $table->text('skills')->nullable();
+            $table->text('notes')->nullable();
+            // Audit columns (soft references; no FK so a user can be deleted
+            // without cascading through every row they touched).
+            $table->unsignedBigInteger('created_by')->nullable()->index();
+            $table->unsignedBigInteger('updated_by')->nullable()->index();
             $table->rememberToken();
             $table->timestamps();
         });

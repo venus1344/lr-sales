@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
@@ -19,9 +19,19 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
+        'created_by',
+        'updated_by',
         'name',
         'email',
         'password',
+        'super',
+        'active',
+        'theme',
+        'passport',
+        'education',
+        'location',
+        'skills',
+        'notes',
     ];
 
     /**
@@ -44,6 +54,16 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'super' => 'boolean',
+            'active' => 'boolean',
         ];
+    }
+
+    /**
+     * Whether this user bypasses all ability checks.
+     */
+    public function isSuper(): bool
+    {
+        return (bool) $this->super;
     }
 }
