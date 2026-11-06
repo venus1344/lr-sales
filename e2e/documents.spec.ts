@@ -30,10 +30,13 @@ test.describe('Documents (UI)', () => {
     await page.getByRole('button', { name: 'Save' }).click()
     await expect(page).toHaveURL(/\/documents\/proformas$/, { timeout: 40_000 })
 
-    // The newest proforma is the first row; open its action menu and print it.
-    const firstRow = page.locator('tbody tr').first()
-    await firstRow.getByRole('button', { name: 'Actions' }).click()
-    await page.getByRole('menuitem', { name: 'Print' }).click()
+    // Rows open the view page; the document number is shown there.
+    await page.locator('tbody tr').first().click()
+    await expect(page).toHaveURL(/\/documents\/proformas\/\d+$/, { timeout: 40_000 })
+    await expect(page.getByRole('heading', { name: 'Proforma invoice' })).toBeVisible()
+    await expect(page.getByText(/WE\/PF/).first()).toBeVisible()
+
+    await page.getByRole('link', { name: 'Print' }).click()
 
     await expect(page).toHaveURL(/\/documents\/proformas\/\d+\/print$/, { timeout: 40_000 })
     await expect(page.getByText(CUSTOMER_QUERY).first()).toBeVisible()

@@ -155,4 +155,5 @@ export async function deleteInvoice(id: string): Promise<void> {
   await prisma.invoices.delete({ where: { id: BigInt(id) } })
 
   revalidatePath('/documents/invoices')
+  redirect('/documents/invoices')
 }

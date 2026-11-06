@@ -128,4 +128,5 @@ export async function deleteLpo(id: string): Promise<void> {
   await prisma.local_purchase_orders.delete({ where: { id: BigInt(id) } })
 
   revalidatePath('/documents/lpos')
+  redirect('/documents/lpos')
 }

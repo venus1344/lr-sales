@@ -148,4 +148,5 @@ export async function deleteProforma(id: string): Promise<void> {
   await prisma.proformas.delete({ where: { id: BigInt(id) } })
 
   revalidatePath('/documents/proformas')
+  redirect('/documents/proformas')
 }

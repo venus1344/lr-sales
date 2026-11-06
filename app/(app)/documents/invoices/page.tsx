@@ -2,12 +2,10 @@ import Link from 'next/link'
 
 import { ClickableRow } from '@/components/clickable-row'
 import { Pagination } from '@/components/pagination'
-import { RowActions } from '@/components/row-actions'
 import { SearchForm } from '@/components/search-form'
 import { requireAbility } from '@/lib/auth/guard'
 import { calculateTotals } from '@/lib/pricing'
 import { prisma } from '@/lib/prisma'
-import { deleteInvoice } from './actions'
 
 export const instant = false
 
@@ -58,13 +56,12 @@ export default async function InvoicesPage({
               <th className="px-4 py-2">Customer</th>
               <th className="px-4 py-2">Date</th>
               <th className="px-4 py-2 text-right">Total</th>
-              <th className="px-4 py-2 text-right">Actions</th>
             </tr>
           </thead>
           <tbody>
             {invoices.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-4 py-6 text-center text-gray-400">No invoices found.</td>
+                <td colSpan={4} className="px-4 py-6 text-center text-gray-400">No invoices found.</td>
               </tr>
             ) : (
               invoices.map((invoice) => {
@@ -82,37 +79,11 @@ export default async function InvoicesPage({
                 ).total
 
                 return (
-                  <ClickableRow key={String(invoice.id)} href={`/documents/invoices/${invoice.id}/edit`}>
+                  <ClickableRow key={String(invoice.id)} href={`/documents/invoices/${invoice.id}`}>
                     <td className="px-4 py-2 font-medium">{invoice.notes}</td>
                     <td className="px-4 py-2">{invoice.name}</td>
                     <td className="px-4 py-2">{invoice.date.toISOString().slice(0, 10)}</td>
                     <td className="px-4 py-2 text-right">{total.toLocaleString()}</td>
-                    <td className="px-4 py-2 text-right">
-                      <RowActions
-                        actions={[
-                          {
-                            kind: 'link',
-                            label: 'Print',
-                            icon: 'print',
-                            href: `/documents/invoices/${invoice.id}/print`,
-                          },
-                          {
-                            kind: 'link',
-                            label: 'Edit',
-                            icon: 'edit',
-                            href: `/documents/invoices/${invoice.id}/edit`,
-                          },
-                          {
-                            kind: 'submit',
-                            label: 'Delete',
-                            icon: 'trash',
-                            danger: true,
-                            submit: deleteInvoice,
-                            id: String(invoice.id),
-                          },
-                        ]}
-                      />
-                    </td>
                   </ClickableRow>
                 )
               })

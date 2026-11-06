@@ -122,4 +122,5 @@ export async function deleteDeliveryNote(id: string): Promise<void> {
   await prisma.delivery_notes.delete({ where: { id: BigInt(id) } })
 
   revalidatePath('/documents/delivery-notes')
+  redirect('/documents/delivery-notes')
 }
