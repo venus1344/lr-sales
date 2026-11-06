@@ -76,6 +76,12 @@
                                 <p>Suppliers</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ route('customers') }}" class="nav-link {{ request()->routeIs('customers') ? 'active' : '' }}">
+                                <i class="nav-icon fa-solid fa-users"></i>
+                                <p>Customers</p>
+                            </a>
+                        </li>
                     </ul>
                 </nav>
             </div>
