@@ -3,32 +3,45 @@ import type { ReactNode } from 'react'
 
 import { auth, signOut } from '@/auth'
 import { Breadcrumbs } from '@/components/breadcrumbs'
+import {
+  IconCategories,
+  IconCurrencies,
+  IconCustomers,
+  IconDashboard,
+  IconDeliveryNotes,
+  IconInvoices,
+  IconItems,
+  IconLpos,
+  IconPackages,
+  IconProformas,
+  IconSuppliers,
+} from '@/components/icons'
 
 export const instant = false
 
 const sections = [
   {
     title: 'Main',
-    items: [{ href: '/', label: 'Dashboard' }],
+    items: [{ href: '/', label: 'Dashboard', icon: IconDashboard }],
   },
   {
     title: 'Settings',
     items: [
-      { href: '/settings/customers', label: 'Customers' },
-      { href: '/settings/suppliers', label: 'Suppliers' },
-      { href: '/settings/items', label: 'Items' },
-      { href: '/settings/item-categories', label: 'Categories' },
-      { href: '/settings/currencies', label: 'Currencies' },
-      { href: '/settings/packages', label: 'Packages' },
+      { href: '/settings/customers', label: 'Customers', icon: IconCustomers },
+      { href: '/settings/suppliers', label: 'Suppliers', icon: IconSuppliers },
+      { href: '/settings/items', label: 'Items', icon: IconItems },
+      { href: '/settings/item-categories', label: 'Categories', icon: IconCategories },
+      { href: '/settings/currencies', label: 'Currencies', icon: IconCurrencies },
+      { href: '/settings/packages', label: 'Packages', icon: IconPackages },
     ],
   },
   {
     title: 'Documents',
     items: [
-      { href: '/documents/proformas', label: 'Proformas' },
-      { href: '/documents/invoices', label: 'Invoices' },
-      { href: '/documents/delivery-notes', label: 'Delivery notes' },
-      { href: '/documents/lpos', label: 'LPOs' },
+      { href: '/documents/proformas', label: 'Proformas', icon: IconProformas },
+      { href: '/documents/invoices', label: 'Invoices', icon: IconInvoices },
+      { href: '/documents/delivery-notes', label: 'Delivery notes', icon: IconDeliveryNotes },
+      { href: '/documents/lpos', label: 'LPOs', icon: IconLpos },
     ],
   },
 ]
@@ -55,15 +68,19 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
                 {section.title}
               </p>
               <div className="space-y-0.5">
-                {section.items.map((item) => (
-                  <a
-                    key={item.href}
-                    href={item.href}
-                    className="block rounded-lg px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    {item.label}
-                  </a>
-                ))}
+                {section.items.map((item) => {
+                  const Icon = item.icon
+                  return (
+                    <a
+                      key={item.href}
+                      href={item.href}
+                      className="flex items-center gap-2.5 rounded-lg px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      <Icon className="h-4 w-4 shrink-0 text-gray-400" />
+                      <span className="truncate">{item.label}</span>
+                    </a>
+                  )
+                })}
               </div>
             </div>
           ))}
