@@ -1,11 +1,6 @@
-@import 'tailwindcss';
-
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
-@source '../**/*.blade.php';
-@source '../**/*.js';
-
-@theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
-}
+/*
+ * Application custom styles.
+ *
+ * AdminLTE 4 (Bootstrap 5) is imported in resources/js/app.js and provides the
+ * component framework. Put small, project-specific overrides here.
+ */
