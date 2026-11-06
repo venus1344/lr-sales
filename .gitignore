@@ -51,5 +51,5 @@ next-env.d.ts
 /test-results/
 /playwright-report/
 /.playwright-browsers/
-.sample_docs/
+.sample-docs/
 *.pdf
