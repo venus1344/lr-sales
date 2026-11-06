@@ -1,0 +1,21 @@
+# Keep the build context small: dependencies, artifacts and local data are not
+# needed to build the image (the Prisma client is generated during the build).
+node_modules
+.next
+generated
+.git
+.env
+.env.*
+!.env.example
+storage
+db
+test-results
+playwright-report
+.playwright-browsers
+.sample-docs
+e2e
+tests
+coverage
+*.pdf
+*.tsbuildinfo
+.DS_Store

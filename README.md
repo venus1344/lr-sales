@@ -108,6 +108,37 @@ On first run install the browser once: `npx playwright install chromium` — bro
 `./.playwright-browsers` (see `playwright.config.ts`). E2E overrides: `E2E_BASE_URL`,
 `E2E_ADMIN_EMAIL`, `E2E_ADMIN_PASSWORD`.
 
+## Deployment (Docker)
+
+The production stack is self-contained — MySQL, a schema step, an idempotent legacy-data
+import, a seed step, and the app — via [`docker-compose.prod.yml`](docker-compose.prod.yml).
+On a VPS:
+
+```bash
+cp .env.example .env                 # MYSQL_* , AUTH_SECRET, ADMIN_EMAIL, ADMIN_PASSWORD, APP_PORT
+mkdir -p db                          # then generate db/data.sql from your backup (below)
+docker compose -f docker-compose.prod.yml up -d --build
+```
+
+Each `up` runs, in order: `migrate` (Prisma schema), `import` (the legacy dataset from
+`db/data.sql`), `seed` (RBAC abilities, Admin role, super-admin from env, one-time burn of
+imported legacy passwords), then `app`. Every step is idempotent — re-running never drops
+or overwrites data. Imported non-admin accounts get unusable passwords once; an admin resets
+them from **Administration → Users**.
+
+`db/data.sql` is **local-only and gitignored** (the SQL data is never committed). Generate
+it from a cleaned `mysqldump`:
+
+```bash
+npx tsx scripts/format-data-sql.ts /path/to/backup.sql db/data.sql
+```
+
+The transform removes `DROP`/`LOCK`, uses `CREATE TABLE IF NOT EXISTS` and `INSERT IGNORE`,
+so it can be applied on every boot. To replace the dataset from a full backup, use
+`scripts/import-sql.sh /path/to/backup.sql`. The app is published on `127.0.0.1:3000` for
+your existing reverse proxy. Full runbook (boot order, updates, backups, restore,
+Nginx/Caddy snippets, troubleshooting): [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md).
+
 ## Project layout
 
 ```
@@ -125,7 +156,11 @@ lib/                        auth, prisma, pricing, numbering, formatting, valida
 prisma/schema.prisma        data model (MySQL 8)
 tests/                      Vitest suites
 e2e/                        Playwright suites
-scripts/                    developer utilities (e.g. check-db.ts)
+scripts/                    dev utilities and deployment helpers
+                            (check-db.ts, seed.ts, format-data-sql.ts, import-sql.sh)
+Dockerfile                  production image (standalone runtime + migration toolchain)
+docker-compose.prod.yml     VPS stack: MySQL + migrate/import/seed + app
+db/                         local-only boot dataset (data.sql is gitignored)
 ```
 
 ## Data model & document rules

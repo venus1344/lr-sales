@@ -47,9 +47,13 @@ next-env.d.ts
 # runtime-uploaded files (expense receipts, private)
 /storage/
 
+# local-only data files (never committed)
+/db/*.sql
+
 # playwright
 /test-results/
 /playwright-report/
 /.playwright-browsers/
 .sample-docs/
 *.pdf
+.docker-config/*
