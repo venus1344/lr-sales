@@ -80,6 +80,10 @@ Goal: **feature parity** with the old app (RULES.md §7 — no new features with
 - [x] **My profile** (`/settings/profile`) — edit own profile and change password (signs out on change).
 - [x] **General settings** (`/settings/more`) — key/value settings with `setting_changelog` audit trail.
 
+### Finance
+- [x] **Accounts** (`/settings/accounts`) — income and expense accounts (list, create/edit, delete → deactivate when in use).
+- [x] **Expenses** (`/expenses`) — list/search, create/edit, delete; income/expense account, requester, project, amount, narration, and a hardened receipt upload (MIME allow-list, 5 MB cap, random filename).
+
 ---
 
 ## 3. Remaining work — parity with `laraforma`
@@ -90,10 +94,6 @@ These exist in the original app and must be ported. Each is unchecked until ship
 - [ ] `internet_customers`, `internet_invoices` / `internet_invoice_packages` models.
 - [ ] Recurring billing (`effective_from`/`effective_to`), package line items, `WE/INTERNET/INV` numbering.
 - [ ] List/detail/print views.
-
-### Accounts & expenses
-- [ ] `income_accounts`, `expense_accounts`, `expenses` models.
-- [ ] Expense form with hardened receipt upload (MIME allow-list, size cap, random filename, non-executable storage).
 
 ### Projects
 - [ ] `projects`, `project_statuses`, `project_files` models.

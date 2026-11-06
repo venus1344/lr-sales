@@ -126,6 +126,16 @@ in a kebab menu.
   each edit appends a `setting_changelog` row (from → to, who, when).
   Abilities: `view_settings`, `set_settings`.
 
+### 5.5 Finance
+- **Income accounts** (`/settings/accounts/income`): name, description, active. List + create/edit;
+  delete deactivates when referenced by expenses. Abilities: `income_account_list/store/update/remove`.
+- **Expense accounts** (`/settings/accounts/expense`): same shape and abilities (`expense_account_*`).
+- **Expenses** (`/expenses`): list with search + pagination; create/edit with requester (user),
+  income account, expense account, optional project, receipt number, amount, narration, and an
+  optional receipt file. Abilities: `expense_list/store/update/remove`.
+  Receipt uploads are validated by MIME type (PDF/JPG/PNG/GIF/WEBP/BMP/SVG), capped at 5 MB, and
+  stored with a random filename under `public/uploads/receipts` (never the original name/extension).
+
 ---
 
 ## 6. Business rules
