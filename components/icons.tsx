@@ -163,6 +163,52 @@ export function IconEdit(props: IconProps) {
   )
 }
 
+export function IconUsers(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <circle cx="9" cy="8" r="3" />
+      <path d="M3 19c0-2.8 2.7-5 6-5s6 2.2 6 5" />
+      <path d="M16 5.5a3 3 0 0 1 0 5" />
+      <path d="M18 14.5c1.9.7 3 2.2 3 4.5" />
+    </svg>
+  )
+}
+
+export function IconRoles(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M12 3 20 6v5c0 4.5-3.2 8-8 10-4.8-2-8-5.5-8-10V6z" />
+      <path d="M9 12l2 2 4-4" />
+    </svg>
+  )
+}
+
+export function IconProfile(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <circle cx="12" cy="12" r="9" />
+      <circle cx="12" cy="10" r="3" />
+      <path d="M6.5 18.5c.8-2 2.9-3.5 5.5-3.5s4.7 1.5 5.5 3.5" />
+    </svg>
+  )
+}
+
+export function IconSettings(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M4 6h8" />
+      <path d="M18 6h2" />
+      <circle cx="15" cy="6" r="2" />
+      <path d="M4 12h2" />
+      <path d="M12 12h8" />
+      <circle cx="9" cy="12" r="2" />
+      <path d="M4 18h8" />
+      <path d="M18 18h2" />
+      <circle cx="15" cy="18" r="2" />
+    </svg>
+  )
+}
+
 export function IconTrash(props: IconProps) {
   return (
     <svg {...base} {...props}>

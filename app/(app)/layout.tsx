@@ -13,8 +13,12 @@ import {
   IconItems,
   IconLpos,
   IconPackages,
+  IconProfile,
   IconProformas,
+  IconRoles,
+  IconSettings,
   IconSuppliers,
+  IconUsers,
 } from '@/components/icons'
 
 export const instant = false
@@ -23,6 +27,15 @@ const sections = [
   {
     title: 'Main',
     items: [{ href: '/', label: 'Dashboard', icon: IconDashboard }],
+  },
+  {
+    title: 'Administration',
+    items: [
+      { href: '/settings/users', label: 'Users', icon: IconUsers },
+      { href: '/settings/roles', label: 'Roles', icon: IconRoles },
+      { href: '/settings/profile', label: 'My profile', icon: IconProfile },
+      { href: '/settings/more', label: 'General settings', icon: IconSettings },
+    ],
   },
   {
     title: 'Settings',
