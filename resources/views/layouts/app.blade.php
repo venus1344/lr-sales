@@ -88,6 +88,12 @@
                                 <p>Items</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ route('packages') }}" class="nav-link {{ request()->routeIs('packages') ? 'active' : '' }}">
+                                <i class="nav-icon fa-solid fa-wifi"></i>
+                                <p>Packages</p>
+                            </a>
+                        </li>
                     </ul>
                 </nav>
             </div>
