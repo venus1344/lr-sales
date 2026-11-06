@@ -4,11 +4,13 @@ import type { ReactNode } from 'react'
 import { auth, signOut } from '@/auth'
 import { Breadcrumbs } from '@/components/breadcrumbs'
 import {
+  IconAccounts,
   IconCategories,
   IconCurrencies,
   IconCustomers,
   IconDashboard,
   IconDeliveryNotes,
+  IconExpenses,
   IconInvoices,
   IconItems,
   IconLpos,
@@ -34,7 +36,12 @@ const sections = [
       { href: '/settings/item-categories', label: 'Categories', icon: IconCategories },
       { href: '/settings/currencies', label: 'Currencies', icon: IconCurrencies },
       { href: '/settings/packages', label: 'Packages', icon: IconPackages },
+      { href: '/settings/accounts', label: 'Accounts', icon: IconAccounts },
     ],
+  },
+  {
+    title: 'Finance',
+    items: [{ href: '/expenses', label: 'Expenses', icon: IconExpenses }],
   },
   {
     title: 'Documents',
