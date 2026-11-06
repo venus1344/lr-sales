@@ -207,7 +207,7 @@ export function LpoForm({ lpo, suppliers, items }: LpoFormProps) {
         <button type="submit" disabled={pending} className="sk-btn">
           Save
         </button>
-        <Link href="/documents/lpos" className="sk-link">Cancel</Link>
+        <Link href={lpo?.id ? `/documents/lpos/${lpo.id}` : '/documents/lpos'} className="sk-link">Cancel</Link>
       </div>
     </form>
   )

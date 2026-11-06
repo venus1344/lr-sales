@@ -119,13 +119,17 @@ export async function updateLpo(
   ])
 
   revalidatePath('/documents/lpos')
-  redirect('/documents/lpos')
+  redirect(`/documents/lpos/${id}`)
 }
 
 export async function deleteLpo(id: string): Promise<void> {
   await requireAbility('lpo_remove')
 
-  await prisma.local_purchase_orders.delete({ where: { id: BigInt(id) } })
+  const lpoId = BigInt(id)
+  await prisma.$transaction([
+    prisma.local_purchase_order_items.deleteMany({ where: { lpo_id: lpoId } }),
+    prisma.local_purchase_orders.delete({ where: { id: lpoId } }),
+  ])
 
   revalidatePath('/documents/lpos')
   redirect('/documents/lpos')

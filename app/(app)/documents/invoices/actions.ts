@@ -146,13 +146,25 @@ export async function updateInvoice(
   ])
 
   revalidatePath('/documents/invoices')
-  redirect('/documents/invoices')
+  redirect(`/documents/invoices/${id}`)
 }
 
 export async function deleteInvoice(id: string): Promise<void> {
   await requireAbility('invoice_remove')
 
-  await prisma.invoices.delete({ where: { id: BigInt(id) } })
+  const invoiceId = BigInt(id)
+  await prisma.$transaction([
+    prisma.invoice_items.deleteMany({ where: { invoice_id: invoiceId } }),
+    prisma.delivery_notes.updateMany({
+      where: { invoice_id: invoiceId },
+      data: { invoice_id: null },
+    }),
+    prisma.internet_invoice_packages.updateMany({
+      where: { invoice_id: invoiceId },
+      data: { invoice_id: null },
+    }),
+    prisma.invoices.delete({ where: { id: invoiceId } }),
+  ])
 
   revalidatePath('/documents/invoices')
   redirect('/documents/invoices')

@@ -113,13 +113,17 @@ export async function updateDeliveryNote(
   ])
 
   revalidatePath('/documents/delivery-notes')
-  redirect('/documents/delivery-notes')
+  redirect(`/documents/delivery-notes/${id}`)
 }
 
 export async function deleteDeliveryNote(id: string): Promise<void> {
   await requireAbility('dnote_remove')
 
-  await prisma.delivery_notes.delete({ where: { id: BigInt(id) } })
+  const dnoteId = BigInt(id)
+  await prisma.$transaction([
+    prisma.delivery_note_items.deleteMany({ where: { dnote_id: dnoteId } }),
+    prisma.delivery_notes.delete({ where: { id: dnoteId } }),
+  ])
 
   revalidatePath('/documents/delivery-notes')
   redirect('/documents/delivery-notes')

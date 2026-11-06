@@ -74,4 +74,39 @@ test.describe('Documents (UI)', () => {
     await page.getByRole('button', { name: 'Save' }).click()
     await expect(page).toHaveURL(/\/documents\/delivery-notes$/, { timeout: 40_000 })
   })
+
+  test('edits a viewed document and returns to it on cancel/save; delete goes to the list', async ({
+    page,
+  }) => {
+    await page.goto('/documents/proformas/new')
+
+    await selectCustomer(page)
+    await page.getByLabel('Date', { exact: true }).fill('2026-02-04')
+    await page.getByLabel('Purpose', { exact: true }).fill('E2E TEST VIEW-EDIT')
+    await addItem(page)
+
+    await page.getByRole('button', { name: 'Save' }).click()
+    await expect(page).toHaveURL(/\/documents\/proformas$/, { timeout: 40_000 })
+
+    // Open the document view.
+    await page.locator('tbody tr').first().click()
+    await expect(page).toHaveURL(/\/documents\/proformas\/\d+$/, { timeout: 40_000 })
+    const viewUrl = page.url()
+
+    // Edit, then Cancel returns to the same view.
+    await page.getByRole('link', { name: 'Edit' }).click()
+    await expect(page).toHaveURL(/\/documents\/proformas\/\d+\/edit$/, { timeout: 40_000 })
+    await page.getByRole('link', { name: 'Cancel' }).click()
+    await expect(page).toHaveURL(viewUrl, { timeout: 40_000 })
+
+    // Edit, then Save returns to the same view.
+    await page.getByRole('link', { name: 'Edit' }).click()
+    await expect(page).toHaveURL(/\/documents\/proformas\/\d+\/edit$/, { timeout: 40_000 })
+    await page.getByRole('button', { name: 'Save' }).click()
+    await expect(page).toHaveURL(viewUrl, { timeout: 40_000 })
+
+    // Delete is the only action that returns to the list.
+    await page.getByRole('button', { name: 'Delete' }).click()
+    await expect(page).toHaveURL(/\/documents\/proformas$/, { timeout: 40_000 })
+  })
 })

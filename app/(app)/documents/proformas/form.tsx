@@ -269,7 +269,7 @@ export function ProformaForm({ proforma, items }: ProformaFormProps) {
         <button type="submit" disabled={pending} className="sk-btn">
           Save
         </button>
-        <Link href="/documents/proformas" className="sk-link">Cancel</Link>
+        <Link href={proforma ? `/documents/proformas/${proforma.id}` : '/documents/proformas'} className="sk-link">Cancel</Link>
       </div>
     </form>
   )

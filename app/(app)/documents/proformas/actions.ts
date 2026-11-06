@@ -139,13 +139,21 @@ export async function updateProforma(
   ])
 
   revalidatePath('/documents/proformas')
-  redirect('/documents/proformas')
+  redirect(`/documents/proformas/${id}`)
 }
 
 export async function deleteProforma(id: string): Promise<void> {
   await requireAbility('proforma_remove')
 
-  await prisma.proformas.delete({ where: { id: BigInt(id) } })
+  const proformaId = BigInt(id)
+  await prisma.$transaction([
+    prisma.proforma_items.deleteMany({ where: { proforma_id: proformaId } }),
+    prisma.invoices.updateMany({
+      where: { proforma_id: proformaId },
+      data: { proforma_id: null },
+    }),
+    prisma.proformas.delete({ where: { id: proformaId } }),
+  ])
 
   revalidatePath('/documents/proformas')
   redirect('/documents/proformas')

@@ -277,7 +277,7 @@ export function InvoiceForm({ invoice, proformaId, items }: InvoiceFormProps) {
         <button type="submit" disabled={pending} className="sk-btn">
           Save
         </button>
-        <Link href="/documents/invoices" className="sk-link">Cancel</Link>
+        <Link href={invoice?.id ? `/documents/invoices/${invoice.id}` : '/documents/invoices'} className="sk-link">Cancel</Link>
       </div>
     </form>
   )

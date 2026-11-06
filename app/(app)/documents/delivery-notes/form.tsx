@@ -229,7 +229,7 @@ export function DeliveryNoteForm({ dnote, items }: DeliveryNoteFormProps) {
         <button type="submit" disabled={pending} className="sk-btn">
           Save
         </button>
-        <Link href="/documents/delivery-notes" className="sk-link">Cancel</Link>
+        <Link href={dnote?.id ? `/documents/delivery-notes/${dnote.id}` : '/documents/delivery-notes'} className="sk-link">Cancel</Link>
       </div>
     </form>
   )
