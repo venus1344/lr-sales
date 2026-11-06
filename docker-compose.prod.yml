@@ -1,0 +1,123 @@
+# Production stack for the VPS: MySQL + schema + idempotent data + seed + app.
+#
+#   docker compose -f docker-compose.prod.yml up -d --build
+#
+# Boot order: db (healthy) -> migrate (schema) -> import (legacy data, idempotent)
+# -> seed (abilities, Admin role, super-admin) -> app.
+# The app is published on the loopback interface only; put your existing
+# reverse proxy (Nginx/Caddy) in front of it. See docs/DEPLOYMENT.md.
+
+name: welink-sales
+
+services:
+  db:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: welink_sales
+      MYSQL_USER: welink
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u root -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    networks:
+      - internal
+
+  # 1. Schema: create/align the tables from prisma/schema.prisma.
+  migrate:
+    build:
+      context: .
+      target: builder
+    command: sh -c "npx prisma db push --skip-generate"
+    environment:
+      DATABASE_URL: mysql://welink:${MYSQL_PASSWORD}@db:3306/welink_sales
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: "no"
+    networks:
+      - internal
+
+  # 2. Data: the legacy dataset from db/data.sql. That file is idempotent
+  #    (CREATE TABLE IF NOT EXISTS + INSERT IGNORE), so re-running it on every
+  #    boot only inserts rows that are missing and never changes or deletes
+  #    existing data.
+  import:
+    image: mysql:8.0
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - "if [ -f /data/data.sql ]; then mysql -h db -u root welink_sales < /data/data.sql; else echo 'db/data.sql not present - starting with an empty dataset'; fi"
+    environment:
+      MYSQL_PWD: ${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - ./db:/data:ro
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    restart: "no"
+    networks:
+      - internal
+
+  # 3. Seed: RBAC abilities, the Admin role, the super-admin account from env,
+  #    and a one-time burn of imported legacy passwords. Idempotent.
+  seed:
+    build:
+      context: .
+      target: builder
+    command: sh -c "npx tsx scripts/seed.ts"
+    environment:
+      DATABASE_URL: mysql://welink:${MYSQL_PASSWORD}@db:3306/welink_sales
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      ADMIN_NAME: ${ADMIN_NAME:-Administrator}
+    depends_on:
+      import:
+        condition: service_completed_successfully
+    restart: "no"
+    networks:
+      - internal
+
+  app:
+    build:
+      context: .
+      target: runner
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      HOSTNAME: "0.0.0.0"
+      DATABASE_URL: mysql://welink:${MYSQL_PASSWORD}@db:3306/welink_sales
+      AUTH_SECRET: ${AUTH_SECRET}
+    ports:
+      - "127.0.0.1:${APP_PORT:-3000}:3000"
+    volumes:
+      - app_storage:/app/storage
+    depends_on:
+      seed:
+        condition: service_completed_successfully
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:3000/signin').then((r) => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - internal
+
+volumes:
+  db_data:
+  app_storage:
+
+networks:
+  internal:
