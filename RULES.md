@@ -141,3 +141,11 @@ git push -u origin feature/<name>
 
 These rules apply to all contributors and all automated/agent tooling in this repository.
 Changes to this file go through the same branch + pull-request process as any other change.
+
+## 7. Feature scope: mirror the original `laraforma`
+
+- This app is a faithful rebuild of the original `laraforma` invoicing project. **Do not add new features, modules, screens, fields, or behaviours that do not exist in `laraforma`.**
+- The goal is **feature parity** — same screens, same data model, same behaviour. When in doubt, match the original rather than inventing.
+- Internal refactors (e.g. extracting pricing/numbering into testable services) are allowed. New user-facing features are **not**.
+- Any genuinely new feature requires explicit sign-off from the project owner and must be recorded here *before* it is built.
+
