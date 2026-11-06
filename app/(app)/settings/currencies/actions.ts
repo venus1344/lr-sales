@@ -55,7 +55,7 @@ export async function updateCurrency(
   })
 
   revalidatePath('/settings/currencies')
-  return redirectWithToast('/settings/currencies', 'Currency updated')
+  return redirectWithToast(`/settings/currencies/${id}`, 'Currency updated')
 }
 
 export async function deleteCurrency(id: string): Promise<void> {
@@ -64,4 +64,13 @@ export async function deleteCurrency(id: string): Promise<void> {
   await prisma.currencies.delete({ where: { id: BigInt(id) } })
 
   revalidatePath('/settings/currencies')
+}
+
+export async function deleteCurrencyFromView(id: string): Promise<void> {
+  try {
+    await deleteCurrency(id)
+  } catch {
+    return redirectWithToast('/settings/currencies', 'Could not delete the currency', 'error')
+  }
+  return redirectWithToast('/settings/currencies', 'Currency deleted')
 }

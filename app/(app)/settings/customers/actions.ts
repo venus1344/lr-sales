@@ -61,7 +61,7 @@ export async function updateCustomer(
   })
 
   revalidatePath('/settings/customers')
-  return redirectWithToast('/settings/customers', 'Customer updated')
+  return redirectWithToast(`/settings/customers/${id}`, 'Customer updated')
 }
 
 export async function deleteCustomer(id: string): Promise<void> {
@@ -70,4 +70,13 @@ export async function deleteCustomer(id: string): Promise<void> {
   await prisma.customers.delete({ where: { id: BigInt(id) } })
 
   revalidatePath('/settings/customers')
+}
+
+export async function deleteCustomerFromView(id: string): Promise<void> {
+  try {
+    await deleteCustomer(id)
+  } catch {
+    return redirectWithToast('/settings/customers', 'Could not delete the customer', 'error')
+  }
+  return redirectWithToast('/settings/customers', 'Customer deleted')
 }

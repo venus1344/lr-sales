@@ -56,7 +56,7 @@ export async function updateIncomeAccount(
 
   revalidatePath('/settings/accounts')
   revalidatePath('/settings/accounts/income')
-  return redirectWithToast('/settings/accounts/income', 'Income account updated')
+  return redirectWithToast(`/settings/accounts/income/${id}`, 'Income account updated')
 }
 
 export async function deleteIncomeAccount(id: string): Promise<void> {
@@ -72,4 +72,13 @@ export async function deleteIncomeAccount(id: string): Promise<void> {
 
   revalidatePath('/settings/accounts')
   revalidatePath('/settings/accounts/income')
+}
+
+export async function deleteIncomeAccountFromView(id: string): Promise<void> {
+  try {
+    await deleteIncomeAccount(id)
+  } catch {
+    return redirectWithToast('/settings/accounts/income', 'Could not delete the income account', 'error')
+  }
+  return redirectWithToast('/settings/accounts/income', 'Income account deleted')
 }

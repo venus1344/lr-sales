@@ -73,7 +73,7 @@ export function ItemCategoryForm({ category }: ItemCategoryFormProps) {
         >
           Save
         </button>
-        <a href="/settings/item-categories" className="text-sm text-gray-500 hover:text-gray-700">
+        <a href={category ? `/settings/item-categories/${category.id}` : '/settings/item-categories'} className="text-sm text-gray-500 hover:text-gray-700">
           Cancel
         </a>
       </div>

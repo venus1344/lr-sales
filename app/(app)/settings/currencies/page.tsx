@@ -2,11 +2,9 @@ import Link from 'next/link'
 
 import { ClickableRow } from '@/components/clickable-row'
 import { Pagination } from '@/components/pagination'
-import { RowActions } from '@/components/row-actions'
 import { SearchForm } from '@/components/search-form'
 import { requireAbility } from '@/lib/auth/guard'
 import { prisma } from '@/lib/prisma'
-import { deleteCurrency } from './actions'
 
 export const instant = false
 
@@ -52,41 +50,20 @@ export default async function CurrenciesPage({
               <th className="px-4 py-2">Name</th>
               <th className="px-4 py-2">Rate</th>
               <th className="px-4 py-2">Status</th>
-              <th className="px-4 py-2 text-right">Actions</th>
             </tr>
           </thead>
           <tbody>
             {currencies.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-4 py-6 text-center text-gray-400">No currencies found.</td>
+                <td colSpan={4} className="px-4 py-6 text-center text-gray-400">No currencies found.</td>
               </tr>
             ) : (
               currencies.map((currency) => (
-                <ClickableRow key={String(currency.id)} href={`/settings/currencies/${currency.id}/edit`}>
+                <ClickableRow key={String(currency.id)} href={`/settings/currencies/${currency.id}`}>
                   <td className="px-4 py-2 font-medium">{currency.code}</td>
                   <td className="px-4 py-2">{currency.name}</td>
                   <td className="px-4 py-2">{currency.rate}</td>
                   <td className="px-4 py-2">{currency.active ? 'Active' : 'Inactive'}</td>
-                  <td className="px-4 py-2 text-right">
-                    <RowActions
-                      actions={[
-                        {
-                          kind: 'link',
-                          label: 'Edit',
-                          icon: 'edit',
-                          href: `/settings/currencies/${currency.id}/edit`,
-                        },
-                        {
-                          kind: 'submit',
-                          label: 'Delete',
-                          icon: 'trash',
-                          danger: true,
-                          submit: deleteCurrency,
-                          id: String(currency.id),
-                        },
-                      ]}
-                    />
-                  </td>
                 </ClickableRow>
               ))
             )}

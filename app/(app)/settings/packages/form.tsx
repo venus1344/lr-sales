@@ -88,7 +88,7 @@ export function PackageForm({ pkg }: PackageFormProps) {
         >
           Save
         </button>
-        <a href="/settings/packages" className="text-sm text-gray-500 hover:text-gray-700">
+        <a href={pkg ? `/settings/packages/${pkg.id}` : '/settings/packages'} className="text-sm text-gray-500 hover:text-gray-700">
           Cancel
         </a>
       </div>

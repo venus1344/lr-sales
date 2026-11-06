@@ -2,12 +2,10 @@ import Link from 'next/link'
 
 import { ClickableRow } from '@/components/clickable-row'
 import { Pagination } from '@/components/pagination'
-import { RowActions } from '@/components/row-actions'
 import { SearchForm } from '@/components/search-form'
 import { formatTin } from '@/lib/format'
 import { requireAbility } from '@/lib/auth/guard'
 import { prisma } from '@/lib/prisma'
-import { deleteSupplier } from './actions'
 
 export const instant = false
 
@@ -54,42 +52,21 @@ export default async function SuppliersPage({
               <th className="px-4 py-2">Contacts</th>
               <th className="px-4 py-2">TIN</th>
               <th className="px-4 py-2">Status</th>
-              <th className="px-4 py-2 text-right">Actions</th>
             </tr>
           </thead>
           <tbody>
             {suppliers.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-4 py-6 text-center text-gray-400">No suppliers found.</td>
+                <td colSpan={5} className="px-4 py-6 text-center text-gray-400">No suppliers found.</td>
               </tr>
             ) : (
               suppliers.map((supplier) => (
-                <ClickableRow key={String(supplier.id)} href={`/settings/suppliers/${supplier.id}/edit`}>
+                <ClickableRow key={String(supplier.id)} href={`/settings/suppliers/${supplier.id}`}>
                   <td className="px-4 py-2 font-medium">{supplier.name}</td>
                   <td className="px-4 py-2">{supplier.location}</td>
                   <td className="px-4 py-2">{supplier.contacts}</td>
                   <td className="px-4 py-2">{formatTin(supplier.tin)}</td>
                   <td className="px-4 py-2">{supplier.status ? 'Active' : 'Inactive'}</td>
-                  <td className="px-4 py-2 text-right">
-                    <RowActions
-                      actions={[
-                        {
-                          kind: 'link',
-                          label: 'Edit',
-                          icon: 'edit',
-                          href: `/settings/suppliers/${supplier.id}/edit`,
-                        },
-                        {
-                          kind: 'submit',
-                          label: 'Delete',
-                          icon: 'trash',
-                          danger: true,
-                          submit: deleteSupplier,
-                          id: String(supplier.id),
-                        },
-                      ]}
-                    />
-                  </td>
                 </ClickableRow>
               ))
             )}
