@@ -62,6 +62,9 @@ export default async function InvoicesPage() {
                     <td className="px-4 py-2">{invoice.date.toISOString().slice(0, 10)}</td>
                     <td className="px-4 py-2 text-right">{total.toLocaleString()}</td>
                     <td className="px-4 py-2 text-right">
+                      <Link href={`/documents/invoices/${invoice.id}/print`} className="sk-link mr-3">
+                        Print
+                      </Link>
                       <Link href={`/documents/invoices/${invoice.id}/edit`} className="sk-link mr-3">
                         Edit
                       </Link>

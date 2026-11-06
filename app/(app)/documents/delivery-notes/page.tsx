@@ -47,7 +47,10 @@ export default async function DeliveryNotesPage() {
                   <td className="px-4 py-2">{note.location}</td>
                   <td className="px-4 py-2 text-right">{note.delivery_note_items.length}</td>
                   <td className="px-4 py-2 text-right">
-                    <Link href={`/documents/delivery-notes/${note.id}/edit`} className="sk-link mr-3">
+                    <Link href={`/documents/delivery-notes/${note.id}/print`} className="sk-link mr-3">
+                        Print
+                      </Link>
+                      <Link href={`/documents/delivery-notes/${note.id}/edit`} className="sk-link mr-3">
                       Edit
                     </Link>
                     <form action={deleteDeliveryNote.bind(null, String(note.id))} className="inline">

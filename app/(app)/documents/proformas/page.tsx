@@ -65,6 +65,9 @@ export default async function ProformasPage() {
                       <Link href={`/documents/invoices/new?proforma=${proforma.id}`} className="sk-link mr-3">
                         Convert
                       </Link>
+                      <Link href={`/documents/proformas/${proforma.id}/print`} className="sk-link mr-3">
+                        Print
+                      </Link>
                       <Link href={`/documents/proformas/${proforma.id}/edit`} className="sk-link mr-3">
                         Edit
                       </Link>
