@@ -39,12 +39,12 @@ export default async function PrintInvoicePage({
   )
 
   return (
-    <div className="mx-auto max-w-3xl p-6">
-      <div className="mb-4 flex justify-end">
+    <div className="print-page">
+      <div className="no-print mb-3 flex justify-end">
         <PrintButton />
       </div>
 
-      <div className="print-document sk-card p-8 text-sm">
+      <div className="print-document text-sm">
         <PrintHeader
           documentType="Tax Invoice"
           number={invoice.notes ?? ''}

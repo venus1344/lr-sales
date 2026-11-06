@@ -257,11 +257,61 @@ body {
   cursor: not-allowed;
 }
 
-/* Printable document */
+/* A4 print sheet (screen preview + print) */
+.print-page {
+  width: 210mm;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 1rem 0;
+}
+
+.print-document {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 297mm;
+  padding: 10mm;
+  box-sizing: border-box;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(17, 24, 39, 0.08);
+}
+
+/* Keep blocks intact and push the footer to the bottom of the page. */
+.print-document > * {
+  flex-shrink: 0;
+}
+
+.print-header,
+.print-footer {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.print-footer {
+  margin-top: auto;
+}
+
+.print-items thead {
+  display: table-header-group;
+}
+
+.print-items tr {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
 @media print {
   @page {
     size: A4;
     margin: 10mm;
+  }
+
+  /* Force background/foreground colours into the saved PDF. */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
   .no-print {
@@ -272,29 +322,20 @@ body {
     background: #ffffff;
   }
 
+  .print-page {
+    width: auto;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
+
   .print-document {
+    width: auto;
+    max-width: none;
+    min-height: 276mm; /* A4 (297mm) minus 2 × 10mm margins, with 1mm slack */
+    padding: 0;
     border: none !important;
-    box-shadow: none !important;
     border-radius: 0 !important;
-    padding: 0 !important;
-    max-width: none !important;
-    font-size: 9px;
-  }
-
-  /* The header and the large footer must never be split across pages. */
-  .print-header,
-  .print-footer {
-    break-inside: avoid;
-    page-break-inside: avoid;
-  }
-
-  /* Repeat the items table header on every printed page. */
-  .print-items thead {
-    display: table-header-group;
-  }
-
-  .print-items tr {
-    break-inside: avoid;
-    page-break-inside: avoid;
+    box-shadow: none !important;
   }
 }
