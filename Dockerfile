@@ -12,6 +12,13 @@ FROM node:22-bookworm-slim AS base
 WORKDIR /app
 ENV NEXT_TELEMETRY_DISABLED=1
 
+# Prisma's CLI and schema engine need OpenSSL. bookworm-slim does not ship it,
+# so Prisma would fall back to the openssl-1.1.x engine binaries and fail.
+# Installed before `npm ci` so the postinstall engine download detects it.
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends openssl ca-certificates \
+  && rm -rf /var/lib/apt/lists/*
+
 # ---- dependencies ----------------------------------------------------------
 FROM base AS deps
 COPY package.json package-lock.json ./
