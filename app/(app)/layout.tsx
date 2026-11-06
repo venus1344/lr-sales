@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import type { ReactNode } from 'react'
 
 import { auth, signOut } from '@/auth'
+import { Breadcrumbs } from '@/components/breadcrumbs'
 
 export const instant = false
 
@@ -40,7 +41,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex h-screen bg-gray-50">
       <aside className="no-print hidden w-60 flex-col border-r border-gray-200 bg-white md:flex">
         <div className="border-b border-gray-100 px-5 py-4">
           <p className="text-base font-bold">WeLink Sales</p>
@@ -86,11 +87,14 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
 
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="no-print flex items-center justify-between gap-4 border-b border-gray-200 bg-white px-6 py-3">
-          <input className="sk-input max-w-xs" placeholder="Search…" aria-label="Search" />
-          <span className="text-sm text-gray-600">{session.user.name}</span>
+          <Breadcrumbs />
+          <div className="flex items-center gap-4">
+            <input className="sk-input hidden max-w-xs md:block" placeholder="Search…" aria-label="Search" />
+            <span className="text-sm text-gray-600">{session.user.name}</span>
+          </div>
         </header>
 
-        <main className="min-w-0 flex-1">{children}</main>
+        <main className="min-h-0 min-w-0 flex-1 overflow-y-auto">{children}</main>
       </div>
     </div>
   )
