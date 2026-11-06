@@ -1,6 +1,7 @@
 export const CRUMB_LABELS: Record<string, string> = {
   settings: 'Settings',
   documents: 'Documents',
+  admin: 'Administration',
   customers: 'Customers',
   suppliers: 'Suppliers',
   items: 'Items',
