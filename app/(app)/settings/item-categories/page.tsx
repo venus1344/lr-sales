@@ -1,7 +1,9 @@
 import Link from 'next/link'
 
+import { IconEdit, IconTrash } from '@/components/icons'
 import { Pagination } from '@/components/pagination'
 import { SearchForm } from '@/components/search-form'
+import { ActionButton, ActionLink } from '@/components/table-actions'
 import { requireAbility } from '@/lib/auth/guard'
 import { prisma } from '@/lib/prisma'
 import { deleteItemCategory } from './actions'
@@ -64,9 +66,9 @@ export default async function ItemCategoriesPage({
                   <td className="px-4 py-2">{category.description}</td>
                   <td className="px-4 py-2">{category.active ? 'Active' : 'Inactive'}</td>
                   <td className="px-4 py-2 text-right">
-                    <Link href={`/settings/item-categories/${category.id}/edit`} className="sk-link mr-3">Edit</Link>
+                    <ActionLink href={`/settings/item-categories/${category.id}/edit`} icon={IconEdit} label="Edit" />
                     <form action={deleteItemCategory.bind(null, String(category.id))} className="inline">
-                      <button type="submit" className="sk-link-danger">Delete</button>
+                      <ActionButton icon={IconTrash} label="Delete" danger />
                     </form>
                   </td>
                 </tr>

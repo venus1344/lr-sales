@@ -1,7 +1,9 @@
 import Link from 'next/link'
 
+import { IconConvert, IconEdit, IconPrint, IconTrash } from '@/components/icons'
 import { Pagination } from '@/components/pagination'
 import { SearchForm } from '@/components/search-form'
+import { ActionButton, ActionLink } from '@/components/table-actions'
 import { requireAbility } from '@/lib/auth/guard'
 import { calculateTotals } from '@/lib/pricing'
 import { prisma } from '@/lib/prisma'
@@ -86,17 +88,23 @@ export default async function ProformasPage({
                     <td className="px-4 py-2">{proforma.date.toISOString().slice(0, 10)}</td>
                     <td className="px-4 py-2 text-right">{total.toLocaleString()}</td>
                     <td className="px-4 py-2 text-right">
-                      <Link href={`/documents/invoices/new?proforma=${proforma.id}`} className="sk-link mr-3">
-                        Convert
-                      </Link>
-                      <Link href={`/documents/proformas/${proforma.id}/print`} className="sk-link mr-3">
-                        Print
-                      </Link>
-                      <Link href={`/documents/proformas/${proforma.id}/edit`} className="sk-link mr-3">
-                        Edit
-                      </Link>
+                      <ActionLink
+                        href={`/documents/invoices/new?proforma=${proforma.id}`}
+                        icon={IconConvert}
+                        label="Convert"
+                      />
+                      <ActionLink
+                        href={`/documents/proformas/${proforma.id}/print`}
+                        icon={IconPrint}
+                        label="Print"
+                      />
+                      <ActionLink
+                        href={`/documents/proformas/${proforma.id}/edit`}
+                        icon={IconEdit}
+                        label="Edit"
+                      />
                       <form action={deleteProforma.bind(null, String(proforma.id))} className="inline">
-                        <button type="submit" className="sk-link-danger">Delete</button>
+                        <ActionButton icon={IconTrash} label="Delete" danger />
                       </form>
                     </td>
                   </tr>

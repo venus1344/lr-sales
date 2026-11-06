@@ -1,7 +1,9 @@
 import Link from 'next/link'
 
+import { IconEdit, IconTrash } from '@/components/icons'
 import { Pagination } from '@/components/pagination'
 import { SearchForm } from '@/components/search-form'
+import { ActionButton, ActionLink } from '@/components/table-actions'
 import { formatTin } from '@/lib/format'
 import { requireAbility } from '@/lib/auth/guard'
 import { prisma } from '@/lib/prisma'
@@ -69,9 +71,9 @@ export default async function CustomersPage({
                   <td className="px-4 py-2">{formatTin(customer.tin)}</td>
                   <td className="px-4 py-2">{customer.status ? 'Active' : 'Inactive'}</td>
                   <td className="px-4 py-2 text-right">
-                    <Link href={`/settings/customers/${customer.id}/edit`} className="sk-link mr-3">Edit</Link>
+                    <ActionLink href={`/settings/customers/${customer.id}/edit`} icon={IconEdit} label="Edit" />
                     <form action={deleteCustomer.bind(null, String(customer.id))} className="inline">
-                      <button type="submit" className="sk-link-danger">Delete</button>
+                      <ActionButton icon={IconTrash} label="Delete" danger />
                     </form>
                   </td>
                 </tr>

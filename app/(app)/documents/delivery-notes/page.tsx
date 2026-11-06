@@ -1,7 +1,9 @@
 import Link from 'next/link'
 
+import { IconEdit, IconPrint, IconTrash } from '@/components/icons'
 import { Pagination } from '@/components/pagination'
 import { SearchForm } from '@/components/search-form'
+import { ActionButton, ActionLink } from '@/components/table-actions'
 import { requireAbility } from '@/lib/auth/guard'
 import { prisma } from '@/lib/prisma'
 import { deleteDeliveryNote } from './actions'
@@ -69,14 +71,18 @@ export default async function DeliveryNotesPage({
                   <td className="px-4 py-2">{note.location}</td>
                   <td className="px-4 py-2 text-right">{note.delivery_note_items.length}</td>
                   <td className="px-4 py-2 text-right">
-                    <Link href={`/documents/delivery-notes/${note.id}/print`} className="sk-link mr-3">
-                      Print
-                    </Link>
-                    <Link href={`/documents/delivery-notes/${note.id}/edit`} className="sk-link mr-3">
-                      Edit
-                    </Link>
+                    <ActionLink
+                      href={`/documents/delivery-notes/${note.id}/print`}
+                      icon={IconPrint}
+                      label="Print"
+                    />
+                    <ActionLink
+                      href={`/documents/delivery-notes/${note.id}/edit`}
+                      icon={IconEdit}
+                      label="Edit"
+                    />
                     <form action={deleteDeliveryNote.bind(null, String(note.id))} className="inline">
-                      <button type="submit" className="sk-link-danger">Delete</button>
+                      <ActionButton icon={IconTrash} label="Delete" danger />
                     </form>
                   </td>
                 </tr>
