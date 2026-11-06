@@ -3,13 +3,14 @@
 This file is the binding working agreement for every contributor — human or agent —
 to the `welink-sales` repository. Read it before making any change.
 
-## 1. Two governing rules
+## 1. Three governing rules
 
 `welink-sales` is a security-sensitive rebuild of a previously-compromised invoicing
-application. Two rules govern all work:
+application. Three rules govern all work:
 
 1. **Every feature starts from a branch.**
 2. **Work is committed in small, atomic units.**
+3. **No unit of work merges without passing tests for it.**
 
 Together they keep `main` always releasable, make each change reviewable in isolation,
 and let any single change be traced or reverted.
@@ -36,6 +37,7 @@ and let any single change be traced or reverted.
 |---------------|-------------|----------------------------|
 | Feature       | `feature/`  | `feature/invoice-pdf`      |
 | Bug fix       | `fix/`      | `fix/vat-rounding`         |
+| Tests         | `test/`     | `test/rbac-authorization`  |
 | Chore/tooling | `chore/`    | `chore/ci-audit`           |
 | Documentation | `docs/`     | `docs/agent-rules`         |
 | Refactor      | `refactor/` | `refactor/pricing-service` |
@@ -77,6 +79,9 @@ Types: `feat`, `fix`, `refactor`, `chore`, `docs`, `test`, `style`, `perf`, `sec
 
 - Push the branch and open a pull request against `main`.
 - A change lands on `main` only after review and CI pass (tests + `composer audit`).
+- **Test gate (hard requirement):** a branch is **not** merged until tests for that
+  change are written and the full suite passes (`php artisan test`). Pure docs/config
+  changes are the only exception and must be noted in the commit message.
 - Rebase (or squash) the branch onto `main` before merging; keep history linear.
 
 ## 3. Non-negotiable security invariants
@@ -94,7 +99,7 @@ in every review:
 ## 4. Definition of done (per commit)
 
 - [ ] One logical change, small and reviewable.
-- [ ] Application boots; relevant tests pass.
+- [ ] Tests for this change are included and the full suite passes (`php artisan test`).
 - [ ] No secrets, `.env`, `*.log`, `vendor/`, or `node_modules/` staged.
 - [ ] `composer audit` reports no new advisories.
 - [ ] Commit message follows §2.4.
