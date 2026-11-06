@@ -1,6 +1,8 @@
 'use client'
 
 import { useActionState } from 'react'
+
+import { PasswordInput } from '@/components/password-input'
 import { useFormToast } from '@/components/toast'
 
 import { changePassword, updateProfile, type ProfileFormState } from './actions'
@@ -84,15 +86,15 @@ export function PasswordForm() {
 
       <div>
         <label htmlFor="old_password" className="block text-sm font-medium text-gray-700">Current password</label>
-        <input id="old_password" name="old_password" type="password" required className="sk-input" />
+        <PasswordInput id="old_password" name="old_password" required autoComplete="current-password" />
       </div>
       <div>
         <label htmlFor="password" className="block text-sm font-medium text-gray-700">New password</label>
-        <input id="password" name="password" type="password" required minLength={8} className="sk-input" />
+        <PasswordInput id="password" name="password" required minLength={8} autoComplete="new-password" />
       </div>
       <div>
         <label htmlFor="password_confirmation" className="block text-sm font-medium text-gray-700">Confirm new password</label>
-        <input id="password_confirmation" name="password_confirmation" type="password" required minLength={8} className="sk-input" />
+        <PasswordInput id="password_confirmation" name="password_confirmation" required minLength={8} autoComplete="new-password" />
       </div>
 
       <p className="text-xs text-gray-500">Changing your password signs you out of this session.</p>

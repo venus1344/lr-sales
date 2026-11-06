@@ -1,6 +1,8 @@
 'use client'
 
 import { useActionState } from 'react'
+
+import { PasswordInput } from '@/components/password-input'
 import { useFormToast } from '@/components/toast'
 
 import { createUser, updateUser, type UserFormState } from './actions'
@@ -46,26 +48,26 @@ export function UserForm({ roles, user }: UserFormProps) {
           </p>
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-gray-700">New password</label>
-            <input id="password" name="password" type="password" minLength={8} className="sk-input" placeholder="Leave blank to keep current" />
+            <PasswordInput id="password" name="password" minLength={8} placeholder="Leave blank to keep current" />
           </div>
           <div>
             <label htmlFor="password_confirmation" className="block text-sm font-medium text-gray-700">
               Confirm new password
             </label>
-            <input id="password_confirmation" name="password_confirmation" type="password" minLength={8} className="sk-input" placeholder="Leave blank to keep current" />
+            <PasswordInput id="password_confirmation" name="password_confirmation" minLength={8} placeholder="Leave blank to keep current" />
           </div>
         </>
       ) : (
         <>
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
-            <input id="password" name="password" type="password" required minLength={8} className="sk-input" />
+            <PasswordInput id="password" name="password" required minLength={8} autoComplete="new-password" />
           </div>
           <div>
             <label htmlFor="password_confirmation" className="block text-sm font-medium text-gray-700">
               Confirm password
             </label>
-            <input id="password_confirmation" name="password_confirmation" type="password" required minLength={8} className="sk-input" />
+            <PasswordInput id="password_confirmation" name="password_confirmation" required minLength={8} autoComplete="new-password" />
           </div>
         </>
       )}
