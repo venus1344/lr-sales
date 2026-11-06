@@ -14,7 +14,22 @@ export const RECEIPT_MIME_TYPES: Record<string, string> = {
   'application/pdf': 'pdf',
 }
 
+/** Stored extension -> content type used when the file is served again. */
+const RECEIPT_EXTENSION_TYPES: Record<string, string> = {
+  png: 'image/png',
+  jpg: 'image/jpeg',
+  jpeg: 'image/jpeg',
+  gif: 'image/gif',
+  webp: 'image/webp',
+  bmp: 'image/bmp',
+  svg: 'image/svg+xml',
+  pdf: 'application/pdf',
+}
+
 export const RECEIPT_MAX_BYTES = 5 * 1024 * 1024
+
+/** Receipts are stored outside the web root; only the authenticated route serves them. */
+export const RECEIPT_STORAGE_DIR = join(process.cwd(), 'storage', 'receipts')
 
 export type ReceiptMeta = { type: string; size: number }
 
@@ -35,7 +50,25 @@ export function validateReceipt(meta: ReceiptMeta): string | null {
   return null
 }
 
-/** Persist an already-validated receipt under public/uploads/receipts. */
+/** URL the app links to; the authenticated route enforces access. */
+export function receiptUrl(name: string): string {
+  return `/api/receipts/${name}`
+}
+
+/** A stored receipt name is a UUID plus one of the allowed extensions. */
+export function isSafeReceiptName(name: string): boolean {
+  const match =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.([a-z0-9]+)$/.exec(name)
+  return match !== null && RECEIPT_EXTENSION_TYPES[match[1]] !== undefined
+}
+
+/** Content type for a stored receipt name, or null when it is not recognised. */
+export function receiptContentType(name: string): string | null {
+  const match = /\.([a-z0-9]+)$/.exec(name)
+  return match ? (RECEIPT_EXTENSION_TYPES[match[1]] ?? null) : null
+}
+
+/** Persist an already-validated receipt under the private storage directory. */
 export async function saveReceipt(file: File): Promise<string> {
   const problem = validateReceipt(file)
   if (problem) {
@@ -43,11 +76,10 @@ export async function saveReceipt(file: File): Promise<string> {
   }
 
   const extension = RECEIPT_MIME_TYPES[file.type]
-  const directory = join(process.cwd(), 'public', 'uploads', 'receipts')
-  await mkdir(directory, { recursive: true })
+  await mkdir(RECEIPT_STORAGE_DIR, { recursive: true })
 
   const name = `${randomUUID()}.${extension}`
-  await writeFile(join(directory, name), Buffer.from(await file.arrayBuffer()))
+  await writeFile(join(RECEIPT_STORAGE_DIR, name), Buffer.from(await file.arrayBuffer()))
 
-  return `/uploads/receipts/${name}`
+  return receiptUrl(name)
 }
