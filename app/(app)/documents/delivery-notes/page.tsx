@@ -1,9 +1,8 @@
 import Link from 'next/link'
 
-import { IconEdit, IconPrint, IconTrash } from '@/components/icons'
 import { Pagination } from '@/components/pagination'
+import { RowActions } from '@/components/row-actions'
 import { SearchForm } from '@/components/search-form'
-import { ActionButton, ActionLink } from '@/components/table-actions'
 import { requireAbility } from '@/lib/auth/guard'
 import { prisma } from '@/lib/prisma'
 import { deleteDeliveryNote } from './actions'
@@ -71,19 +70,30 @@ export default async function DeliveryNotesPage({
                   <td className="px-4 py-2">{note.location}</td>
                   <td className="px-4 py-2 text-right">{note.delivery_note_items.length}</td>
                   <td className="px-4 py-2 text-right">
-                    <ActionLink
-                      href={`/documents/delivery-notes/${note.id}/print`}
-                      icon={IconPrint}
-                      label="Print"
+                    <RowActions
+                      actions={[
+                        {
+                          kind: 'link',
+                          label: 'Print',
+                          icon: 'print',
+                          href: `/documents/delivery-notes/${note.id}/print`,
+                        },
+                        {
+                          kind: 'link',
+                          label: 'Edit',
+                          icon: 'edit',
+                          href: `/documents/delivery-notes/${note.id}/edit`,
+                        },
+                        {
+                          kind: 'submit',
+                          label: 'Delete',
+                          icon: 'trash',
+                          danger: true,
+                          submit: deleteDeliveryNote,
+                          id: String(note.id),
+                        },
+                      ]}
                     />
-                    <ActionLink
-                      href={`/documents/delivery-notes/${note.id}/edit`}
-                      icon={IconEdit}
-                      label="Edit"
-                    />
-                    <form action={deleteDeliveryNote.bind(null, String(note.id))} className="inline">
-                      <ActionButton icon={IconTrash} label="Delete" danger />
-                    </form>
                   </td>
                 </tr>
               ))

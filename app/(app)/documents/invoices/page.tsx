@@ -1,9 +1,8 @@
 import Link from 'next/link'
 
-import { IconEdit, IconPrint, IconTrash } from '@/components/icons'
 import { Pagination } from '@/components/pagination'
+import { RowActions } from '@/components/row-actions'
 import { SearchForm } from '@/components/search-form'
-import { ActionButton, ActionLink } from '@/components/table-actions'
 import { requireAbility } from '@/lib/auth/guard'
 import { calculateTotals } from '@/lib/pricing'
 import { prisma } from '@/lib/prisma'
@@ -88,19 +87,30 @@ export default async function InvoicesPage({
                     <td className="px-4 py-2">{invoice.date.toISOString().slice(0, 10)}</td>
                     <td className="px-4 py-2 text-right">{total.toLocaleString()}</td>
                     <td className="px-4 py-2 text-right">
-                      <ActionLink
-                        href={`/documents/invoices/${invoice.id}/print`}
-                        icon={IconPrint}
-                        label="Print"
+                      <RowActions
+                        actions={[
+                          {
+                            kind: 'link',
+                            label: 'Print',
+                            icon: 'print',
+                            href: `/documents/invoices/${invoice.id}/print`,
+                          },
+                          {
+                            kind: 'link',
+                            label: 'Edit',
+                            icon: 'edit',
+                            href: `/documents/invoices/${invoice.id}/edit`,
+                          },
+                          {
+                            kind: 'submit',
+                            label: 'Delete',
+                            icon: 'trash',
+                            danger: true,
+                            submit: deleteInvoice,
+                            id: String(invoice.id),
+                          },
+                        ]}
                       />
-                      <ActionLink
-                        href={`/documents/invoices/${invoice.id}/edit`}
-                        icon={IconEdit}
-                        label="Edit"
-                      />
-                      <form action={deleteInvoice.bind(null, String(invoice.id))} className="inline">
-                        <ActionButton icon={IconTrash} label="Delete" danger />
-                      </form>
                     </td>
                   </tr>
                 )

@@ -1,9 +1,8 @@
 import Link from 'next/link'
 
-import { IconConvert, IconEdit, IconPrint, IconTrash } from '@/components/icons'
 import { Pagination } from '@/components/pagination'
+import { RowActions } from '@/components/row-actions'
 import { SearchForm } from '@/components/search-form'
-import { ActionButton, ActionLink } from '@/components/table-actions'
 import { requireAbility } from '@/lib/auth/guard'
 import { calculateTotals } from '@/lib/pricing'
 import { prisma } from '@/lib/prisma'
@@ -88,24 +87,36 @@ export default async function ProformasPage({
                     <td className="px-4 py-2">{proforma.date.toISOString().slice(0, 10)}</td>
                     <td className="px-4 py-2 text-right">{total.toLocaleString()}</td>
                     <td className="px-4 py-2 text-right">
-                      <ActionLink
-                        href={`/documents/invoices/new?proforma=${proforma.id}`}
-                        icon={IconConvert}
-                        label="Convert"
+                      <RowActions
+                        actions={[
+                          {
+                            kind: 'link',
+                            label: 'Convert',
+                            icon: 'convert',
+                            href: `/documents/invoices/new?proforma=${proforma.id}`,
+                          },
+                          {
+                            kind: 'link',
+                            label: 'Print',
+                            icon: 'print',
+                            href: `/documents/proformas/${proforma.id}/print`,
+                          },
+                          {
+                            kind: 'link',
+                            label: 'Edit',
+                            icon: 'edit',
+                            href: `/documents/proformas/${proforma.id}/edit`,
+                          },
+                          {
+                            kind: 'submit',
+                            label: 'Delete',
+                            icon: 'trash',
+                            danger: true,
+                            submit: deleteProforma,
+                            id: String(proforma.id),
+                          },
+                        ]}
                       />
-                      <ActionLink
-                        href={`/documents/proformas/${proforma.id}/print`}
-                        icon={IconPrint}
-                        label="Print"
-                      />
-                      <ActionLink
-                        href={`/documents/proformas/${proforma.id}/edit`}
-                        icon={IconEdit}
-                        label="Edit"
-                      />
-                      <form action={deleteProforma.bind(null, String(proforma.id))} className="inline">
-                        <ActionButton icon={IconTrash} label="Delete" danger />
-                      </form>
                     </td>
                   </tr>
                 )

@@ -1,9 +1,8 @@
 import Link from 'next/link'
 
-import { IconEdit, IconTrash } from '@/components/icons'
 import { Pagination } from '@/components/pagination'
+import { RowActions } from '@/components/row-actions'
 import { SearchForm } from '@/components/search-form'
-import { ActionButton, ActionLink } from '@/components/table-actions'
 import { formatTin } from '@/lib/format'
 import { requireAbility } from '@/lib/auth/guard'
 import { prisma } from '@/lib/prisma'
@@ -71,10 +70,24 @@ export default async function CustomersPage({
                   <td className="px-4 py-2">{formatTin(customer.tin)}</td>
                   <td className="px-4 py-2">{customer.status ? 'Active' : 'Inactive'}</td>
                   <td className="px-4 py-2 text-right">
-                    <ActionLink href={`/settings/customers/${customer.id}/edit`} icon={IconEdit} label="Edit" />
-                    <form action={deleteCustomer.bind(null, String(customer.id))} className="inline">
-                      <ActionButton icon={IconTrash} label="Delete" danger />
-                    </form>
+                    <RowActions
+                      actions={[
+                        {
+                          kind: 'link',
+                          label: 'Edit',
+                          icon: 'edit',
+                          href: `/settings/customers/${customer.id}/edit`,
+                        },
+                        {
+                          kind: 'submit',
+                          label: 'Delete',
+                          icon: 'trash',
+                          danger: true,
+                          submit: deleteCustomer,
+                          id: String(customer.id),
+                        },
+                      ]}
+                    />
                   </td>
                 </tr>
               ))

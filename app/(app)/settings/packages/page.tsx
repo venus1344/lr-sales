@@ -1,9 +1,8 @@
 import Link from 'next/link'
 
-import { IconEdit, IconTrash } from '@/components/icons'
 import { Pagination } from '@/components/pagination'
+import { RowActions } from '@/components/row-actions'
 import { SearchForm } from '@/components/search-form'
-import { ActionButton, ActionLink } from '@/components/table-actions'
 import { requireAbility } from '@/lib/auth/guard'
 import { prisma } from '@/lib/prisma'
 import { deletePackage } from './actions'
@@ -68,10 +67,24 @@ export default async function PackagesPage({
                   <td className="px-4 py-2">{pkg.price}</td>
                   <td className="px-4 py-2">{pkg.status ? 'Active' : 'Inactive'}</td>
                   <td className="px-4 py-2 text-right">
-                    <ActionLink href={`/settings/packages/${pkg.id}/edit`} icon={IconEdit} label="Edit" />
-                    <form action={deletePackage.bind(null, String(pkg.id))} className="inline">
-                      <ActionButton icon={IconTrash} label="Delete" danger />
-                    </form>
+                    <RowActions
+                      actions={[
+                        {
+                          kind: 'link',
+                          label: 'Edit',
+                          icon: 'edit',
+                          href: `/settings/packages/${pkg.id}/edit`,
+                        },
+                        {
+                          kind: 'submit',
+                          label: 'Delete',
+                          icon: 'trash',
+                          danger: true,
+                          submit: deletePackage,
+                          id: String(pkg.id),
+                        },
+                      ]}
+                    />
                   </td>
                 </tr>
               ))
