@@ -123,6 +123,16 @@ export function IconLpos(props: IconProps) {
   )
 }
 
+export function IconDots(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden {...props}>
+      <circle cx="12" cy="5" r="1.7" />
+      <circle cx="12" cy="12" r="1.7" />
+      <circle cx="12" cy="19" r="1.7" />
+    </svg>
+  )
+}
+
 export function IconConvert(props: IconProps) {
   return (
     <svg {...base} {...props}>
