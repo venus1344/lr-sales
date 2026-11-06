@@ -14,6 +14,7 @@ import {
   IconLpos,
   IconPackages,
   IconProformas,
+  IconSettings,
   IconSuppliers,
 } from '@/components/icons'
 
@@ -87,6 +88,13 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
         </nav>
 
         <div className="border-t border-gray-100 p-4">
+          <a
+            href="/admin"
+            className="mb-3 flex items-center gap-2.5 rounded-lg px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100"
+          >
+            <IconSettings className="h-4 w-4 shrink-0 text-gray-400" />
+            <span className="truncate">Administration</span>
+          </a>
           <p className="text-sm font-medium text-gray-900">{session.user.name}</p>
           <p className="mb-3 truncate text-xs text-gray-500">{session.user.email}</p>
           <form
