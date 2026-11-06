@@ -75,6 +75,10 @@ Conventional Commits, imperative mood, subject ≤ 72 characters:
 
 Types: `feat`, `fix`, `refactor`, `chore`, `docs`, `test`, `style`, `perf`, `security`.
 
+**No co-author trailers.** Commit messages must not contain `Co-authored-by:` or any other
+co-author/attribution line (including AI/tool attribution). Commits are authored by a single
+human author only.
+
 ### 2.5 Merging
 
 - Push the branch and open a pull request against `main`.
