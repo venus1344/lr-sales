@@ -56,7 +56,7 @@ export async function updateExpenseAccount(
 
   revalidatePath('/settings/accounts')
   revalidatePath('/settings/accounts/expense')
-  return redirectWithToast('/settings/accounts/expense', 'Expense account updated')
+  return redirectWithToast(`/settings/accounts/expense/${id}`, 'Expense account updated')
 }
 
 export async function deleteExpenseAccount(id: string): Promise<void> {
@@ -72,4 +72,13 @@ export async function deleteExpenseAccount(id: string): Promise<void> {
 
   revalidatePath('/settings/accounts')
   revalidatePath('/settings/accounts/expense')
+}
+
+export async function deleteExpenseAccountFromView(id: string): Promise<void> {
+  try {
+    await deleteExpenseAccount(id)
+  } catch {
+    return redirectWithToast('/settings/accounts/expense', 'Could not delete the expense account', 'error')
+  }
+  return redirectWithToast('/settings/accounts/expense', 'Expense account deleted')
 }

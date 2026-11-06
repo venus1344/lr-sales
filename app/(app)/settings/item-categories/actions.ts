@@ -56,7 +56,7 @@ export async function updateItemCategory(
   })
 
   revalidatePath('/settings/item-categories')
-  return redirectWithToast('/settings/item-categories', 'Item category updated')
+  return redirectWithToast(`/settings/item-categories/${id}`, 'Item category updated')
 }
 
 export async function deleteItemCategory(id: string): Promise<void> {
@@ -65,4 +65,13 @@ export async function deleteItemCategory(id: string): Promise<void> {
   await prisma.item_categories.delete({ where: { id: BigInt(id) } })
 
   revalidatePath('/settings/item-categories')
+}
+
+export async function deleteItemCategoryFromView(id: string): Promise<void> {
+  try {
+    await deleteItemCategory(id)
+  } catch {
+    return redirectWithToast('/settings/item-categories', 'Could not delete the item category', 'error')
+  }
+  return redirectWithToast('/settings/item-categories', 'Item category deleted')
 }

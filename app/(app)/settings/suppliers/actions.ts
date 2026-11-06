@@ -61,7 +61,7 @@ export async function updateSupplier(
   })
 
   revalidatePath('/settings/suppliers')
-  return redirectWithToast('/settings/suppliers', 'Supplier updated')
+  return redirectWithToast(`/settings/suppliers/${id}`, 'Supplier updated')
 }
 
 export async function deleteSupplier(id: string): Promise<void> {
@@ -70,4 +70,13 @@ export async function deleteSupplier(id: string): Promise<void> {
   await prisma.suppliers.delete({ where: { id: BigInt(id) } })
 
   revalidatePath('/settings/suppliers')
+}
+
+export async function deleteSupplierFromView(id: string): Promise<void> {
+  try {
+    await deleteSupplier(id)
+  } catch {
+    return redirectWithToast('/settings/suppliers', 'Could not delete the supplier', 'error')
+  }
+  return redirectWithToast('/settings/suppliers', 'Supplier deleted')
 }

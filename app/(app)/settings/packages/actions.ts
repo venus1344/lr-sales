@@ -55,7 +55,7 @@ export async function updatePackage(
   })
 
   revalidatePath('/settings/packages')
-  return redirectWithToast('/settings/packages', 'Package updated')
+  return redirectWithToast(`/settings/packages/${id}`, 'Package updated')
 }
 
 export async function deletePackage(id: string): Promise<void> {
@@ -64,4 +64,13 @@ export async function deletePackage(id: string): Promise<void> {
   await prisma.packages.delete({ where: { id: BigInt(id) } })
 
   revalidatePath('/settings/packages')
+}
+
+export async function deletePackageFromView(id: string): Promise<void> {
+  try {
+    await deletePackage(id)
+  } catch {
+    return redirectWithToast('/settings/packages', 'Could not delete the package', 'error')
+  }
+  return redirectWithToast('/settings/packages', 'Package deleted')
 }

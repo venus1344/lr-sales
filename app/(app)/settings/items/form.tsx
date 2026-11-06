@@ -75,7 +75,7 @@ export function ItemForm({ item, categories }: ItemFormProps) {
         <button type="submit" disabled={pending} className="sk-btn disabled:opacity-50">
           Save
         </button>
-        <a href="/settings/items" className="text-sm text-gray-500 hover:text-gray-700">Cancel</a>
+        <a href={item ? `/settings/items/${item.id}` : '/settings/items'} className="text-sm text-gray-500 hover:text-gray-700">Cancel</a>
       </div>
     </form>
   )

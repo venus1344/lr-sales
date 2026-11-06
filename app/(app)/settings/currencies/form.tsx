@@ -90,7 +90,7 @@ export function CurrencyForm({ currency }: CurrencyFormProps) {
         >
           Save
         </button>
-        <a href="/settings/currencies" className="text-sm text-gray-500 hover:text-gray-700">
+        <a href={currency ? `/settings/currencies/${currency.id}` : '/settings/currencies'} className="text-sm text-gray-500 hover:text-gray-700">
           Cancel
         </a>
       </div>

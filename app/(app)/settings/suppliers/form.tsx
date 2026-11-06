@@ -76,7 +76,7 @@ export function SupplierForm({ supplier }: SupplierFormProps) {
         <button type="submit" disabled={pending} className="sk-btn disabled:opacity-50">
           Save
         </button>
-        <a href="/settings/suppliers" className="text-sm text-gray-500 hover:text-gray-700">Cancel</a>
+        <a href={supplier ? `/settings/suppliers/${supplier.id}` : '/settings/suppliers'} className="text-sm text-gray-500 hover:text-gray-700">Cancel</a>
       </div>
     </form>
   )

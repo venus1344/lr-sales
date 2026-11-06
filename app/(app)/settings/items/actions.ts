@@ -68,7 +68,7 @@ export async function updateItem(
   })
 
   revalidatePath('/settings/items')
-  return redirectWithToast('/settings/items', 'Item updated')
+  return redirectWithToast(`/settings/items/${id}`, 'Item updated')
 }
 
 export async function deleteItem(id: string): Promise<void> {
@@ -77,4 +77,13 @@ export async function deleteItem(id: string): Promise<void> {
   await prisma.items.delete({ where: { id: BigInt(id) } })
 
   revalidatePath('/settings/items')
+}
+
+export async function deleteItemFromView(id: string): Promise<void> {
+  try {
+    await deleteItem(id)
+  } catch {
+    return redirectWithToast('/settings/items', 'Could not delete the item', 'error')
+  }
+  return redirectWithToast('/settings/items', 'Item deleted')
 }

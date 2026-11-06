@@ -43,7 +43,7 @@ export function IncomeAccountForm({ account }: IncomeAccountFormProps) {
 
       <div className="flex items-center gap-3 pt-2">
         <button type="submit" disabled={pending} className="sk-btn disabled:opacity-50">Save</button>
-        <a href="/settings/accounts/income" className="text-sm text-gray-500 hover:text-gray-700">Cancel</a>
+        <a href={account ? `/settings/accounts/income/${account.id}` : '/settings/accounts/income'} className="text-sm text-gray-500 hover:text-gray-700">Cancel</a>
       </div>
     </form>
   )
