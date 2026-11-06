@@ -2,6 +2,7 @@
 
 import { useActionState, useState } from 'react'
 
+import { Combobox, type ComboboxOption } from '@/components/combobox'
 import { createProforma, updateProforma, type ProformaFormState } from './actions'
 
 export type ItemOption = {
@@ -42,6 +43,20 @@ export type ProformaFormProps = {
   items: ItemOption[]
 }
 
+type ItemData = {
+  specification: string | null
+  unit_measure: string | null
+  price: number | null
+}
+
+type CustomerData = {
+  location: string | null
+  contact: string | null
+  postal: string | null
+  tin: string | null
+  vrn: string | null
+}
+
 const input = 'sk-input'
 const label = 'block text-sm font-medium text-gray-700'
 
@@ -53,9 +68,18 @@ export function ProformaForm({ proforma, items }: ProformaFormProps) {
     { error: undefined },
   )
 
-  const [lines, setLines] = useState<ProformaLine[]>(
-    proforma?.lines ?? [],
+  const [lines, setLines] = useState<ProformaLine[]>(proforma?.lines ?? [])
+  const [labels, setLabels] = useState<Record<string, string>>(() =>
+    Object.fromEntries(items.map((item) => [item.id, item.name])),
   )
+  const [customer, setCustomer] = useState({
+    name: proforma?.name ?? '',
+    contact: proforma?.contact ?? '',
+    location: proforma?.location ?? '',
+    postal: proforma?.postal ?? '',
+    tin: proforma?.tin ?? '',
+    vrn: proforma?.vrn ?? '',
+  })
 
   function addLine() {
     setLines((prev) => [
@@ -66,21 +90,23 @@ export function ProformaForm({ proforma, items }: ProformaFormProps) {
 
   function updateLine(index: number, field: keyof ProformaLine, value: string) {
     setLines((prev) =>
+      prev.map((line, i) => (i === index ? { ...line, [field]: value } : line)),
+    )
+  }
+
+  function selectItem(index: number, option: ComboboxOption) {
+    const data = option.data as ItemData | undefined
+    setLabels((prev) => ({ ...prev, [option.value]: option.label }))
+    setLines((prev) =>
       prev.map((line, i) => {
         if (i !== index) return line
-
-        const next = { ...line, [field]: value }
-
-        if (field === 'item_id') {
-          const item = items.find((it) => it.id === value)
-          if (item) {
-            next.specification = item.specification ?? ''
-            next.unit_measure = item.unit_measure ?? ''
-            next.price = String(item.price)
-          }
+        return {
+          ...line,
+          item_id: option.value,
+          specification: data?.specification ?? line.specification,
+          unit_measure: data?.unit_measure ?? line.unit_measure,
+          price: data?.price != null ? String(data.price) : line.price,
         }
-
-        return next
       }),
     )
   }
@@ -89,6 +115,25 @@ export function ProformaForm({ proforma, items }: ProformaFormProps) {
     setLines((prev) => prev.filter((_, i) => i !== index))
   }
 
+  function selectCustomer(option: ComboboxOption) {
+    const data = option.data as CustomerData | undefined
+    setCustomer((prev) => ({
+      ...prev,
+      name: option.label,
+      contact: data?.contact ?? prev.contact,
+      location: data?.location ?? prev.location,
+      postal: data?.postal ?? prev.postal,
+      tin: data?.tin ?? prev.tin,
+      vrn: data?.vrn ?? prev.vrn,
+    }))
+  }
+
+  function setCustomerField(field: 'contact' | 'location' | 'postal' | 'tin' | 'vrn', value: string) {
+    setCustomer((prev) => ({ ...prev, [field]: value }))
+  }
+
+  const labelFor = (id: string) => labels[id] ?? ''
+
   return (
     <form action={formAction} className="space-y-4">
       {state.error && <p className="text-sm text-red-600">{state.error}</p>}
@@ -96,7 +141,17 @@ export function ProformaForm({ proforma, items }: ProformaFormProps) {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
           <label htmlFor="name" className={label}>Customer</label>
-          <input id="name" name="name" required defaultValue={proforma?.name} className={input} />
+          <Combobox
+            id="name"
+            name="name"
+            value={customer.name}
+            label={customer.name}
+            placeholder="Search customers…"
+            searchUrl="/api/search/customers"
+            createHref="/settings/customers/new"
+            createLabel="Create customer"
+            onChange={selectCustomer}
+          />
         </div>
         <div>
           <label htmlFor="date" className={label}>Date</label>
@@ -116,23 +171,23 @@ export function ProformaForm({ proforma, items }: ProformaFormProps) {
         </div>
         <div>
           <label htmlFor="contact" className={label}>Contact</label>
-          <input id="contact" name="contact" defaultValue={proforma?.contact ?? ''} className={input} />
+          <input id="contact" name="contact" value={customer.contact} onChange={(e) => setCustomerField('contact', e.target.value)} className={input} />
         </div>
         <div>
           <label htmlFor="location" className={label}>Location</label>
-          <input id="location" name="location" defaultValue={proforma?.location ?? ''} className={input} />
+          <input id="location" name="location" value={customer.location} onChange={(e) => setCustomerField('location', e.target.value)} className={input} />
         </div>
         <div>
           <label htmlFor="postal" className={label}>Postal address</label>
-          <input id="postal" name="postal" defaultValue={proforma?.postal ?? ''} className={input} />
+          <input id="postal" name="postal" value={customer.postal} onChange={(e) => setCustomerField('postal', e.target.value)} className={input} />
         </div>
         <div>
           <label htmlFor="tin" className={label}>TIN</label>
-          <input id="tin" name="tin" maxLength={20} defaultValue={proforma?.tin ?? ''} className={input} />
+          <input id="tin" name="tin" maxLength={20} value={customer.tin} onChange={(e) => setCustomerField('tin', e.target.value)} className={input} />
         </div>
         <div>
           <label htmlFor="vrn" className={label}>VRN</label>
-          <input id="vrn" name="vrn" maxLength={20} defaultValue={proforma?.vrn ?? ''} className={input} />
+          <input id="vrn" name="vrn" maxLength={20} value={customer.vrn} onChange={(e) => setCustomerField('vrn', e.target.value)} className={input} />
         </div>
         <div>
           <label htmlFor="vat" className={label}>VAT %</label>
@@ -157,16 +212,16 @@ export function ProformaForm({ proforma, items }: ProformaFormProps) {
         <div className="space-y-2">
           {lines.map((line, i) => (
             <div key={i} className="grid grid-cols-12 gap-2">
-              <select
-                className="sk-input col-span-3"
+              <Combobox
+                className="col-span-3"
                 value={line.item_id}
-                onChange={(e) => updateLine(i, 'item_id', e.target.value)}
-              >
-                <option value="">Item…</option>
-                {items.map((item) => (
-                  <option key={item.id} value={item.id}>{item.name}</option>
-                ))}
-              </select>
+                label={labelFor(line.item_id)}
+                placeholder="Item…"
+                searchUrl="/api/search/items"
+                createHref="/settings/items/new"
+                createLabel="Create item"
+                onChange={(option) => selectItem(i, option)}
+              />
               <input
                 className="sk-input col-span-4"
                 placeholder="Specification"
