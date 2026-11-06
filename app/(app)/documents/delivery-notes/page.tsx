@@ -1,5 +1,6 @@
 import Link from 'next/link'
 
+import { ClickableRow } from '@/components/clickable-row'
 import { Pagination } from '@/components/pagination'
 import { RowActions } from '@/components/row-actions'
 import { SearchForm } from '@/components/search-form'
@@ -64,7 +65,7 @@ export default async function DeliveryNotesPage({
               </tr>
             ) : (
               notes.map((note) => (
-                <tr key={String(note.id)} className="border-b last:border-0">
+                <ClickableRow key={String(note.id)} href={`/documents/delivery-notes/${note.id}/edit`}>
                   <td className="px-4 py-2">{note.date.toISOString().slice(0, 10)}</td>
                   <td className="px-4 py-2 font-medium">{note.name}</td>
                   <td className="px-4 py-2">{note.location}</td>
@@ -95,7 +96,7 @@ export default async function DeliveryNotesPage({
                       ]}
                     />
                   </td>
-                </tr>
+                </ClickableRow>
               ))
             )}
           </tbody>

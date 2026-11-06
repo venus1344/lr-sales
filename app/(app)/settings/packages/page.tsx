@@ -1,5 +1,6 @@
 import Link from 'next/link'
 
+import { ClickableRow } from '@/components/clickable-row'
 import { Pagination } from '@/components/pagination'
 import { RowActions } from '@/components/row-actions'
 import { SearchForm } from '@/components/search-form'
@@ -61,7 +62,7 @@ export default async function PackagesPage({
               </tr>
             ) : (
               packages.map((pkg) => (
-                <tr key={String(pkg.id)} className="border-b last:border-0">
+                <ClickableRow key={String(pkg.id)} href={`/settings/packages/${pkg.id}/edit`}>
                   <td className="px-4 py-2 font-medium">{pkg.name}</td>
                   <td className="px-4 py-2">{pkg.description}</td>
                   <td className="px-4 py-2">{pkg.price}</td>
@@ -86,7 +87,7 @@ export default async function PackagesPage({
                       ]}
                     />
                   </td>
-                </tr>
+                </ClickableRow>
               ))
             )}
           </tbody>

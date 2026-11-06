@@ -1,5 +1,6 @@
 import Link from 'next/link'
 
+import { ClickableRow } from '@/components/clickable-row'
 import { Pagination } from '@/components/pagination'
 import { RowActions } from '@/components/row-actions'
 import { SearchForm } from '@/components/search-form'
@@ -63,7 +64,7 @@ export default async function CustomersPage({
               </tr>
             ) : (
               customers.map((customer) => (
-                <tr key={String(customer.id)} className="border-b last:border-0">
+                <ClickableRow key={String(customer.id)} href={`/settings/customers/${customer.id}/edit`}>
                   <td className="px-4 py-2 font-medium">{customer.name}</td>
                   <td className="px-4 py-2">{customer.location}</td>
                   <td className="px-4 py-2">{customer.contact}</td>
@@ -89,7 +90,7 @@ export default async function CustomersPage({
                       ]}
                     />
                   </td>
-                </tr>
+                </ClickableRow>
               ))
             )}
           </tbody>

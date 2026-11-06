@@ -77,7 +77,11 @@ export function RowActions({ actions }: { actions: RowAction[] }) {
   }
 
   return (
-    <div ref={wrapperRef} className="relative inline-block">
+    <div
+      ref={wrapperRef}
+      className="relative inline-block"
+      onClick={(e) => e.stopPropagation()}
+    >
       <button
         ref={buttonRef}
         type="button"

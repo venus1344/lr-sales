@@ -1,5 +1,6 @@
 import Link from 'next/link'
 
+import { ClickableRow } from '@/components/clickable-row'
 import { Pagination } from '@/components/pagination'
 import { RowActions } from '@/components/row-actions'
 import { SearchForm } from '@/components/search-form'
@@ -81,7 +82,7 @@ export default async function ProformasPage({
                 ).total
 
                 return (
-                  <tr key={String(proforma.id)} className="border-b last:border-0">
+                  <ClickableRow key={String(proforma.id)} href={`/documents/proformas/${proforma.id}/edit`}>
                     <td className="px-4 py-2 font-medium">{proforma.notes}</td>
                     <td className="px-4 py-2">{proforma.name}</td>
                     <td className="px-4 py-2">{proforma.date.toISOString().slice(0, 10)}</td>
@@ -118,7 +119,7 @@ export default async function ProformasPage({
                         ]}
                       />
                     </td>
-                  </tr>
+                  </ClickableRow>
                 )
               })
             )}

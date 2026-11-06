@@ -1,5 +1,6 @@
 import Link from 'next/link'
 
+import { ClickableRow } from '@/components/clickable-row'
 import { Pagination } from '@/components/pagination'
 import { RowActions } from '@/components/row-actions'
 import { SearchForm } from '@/components/search-form'
@@ -61,7 +62,7 @@ export default async function CurrenciesPage({
               </tr>
             ) : (
               currencies.map((currency) => (
-                <tr key={String(currency.id)} className="border-b last:border-0">
+                <ClickableRow key={String(currency.id)} href={`/settings/currencies/${currency.id}/edit`}>
                   <td className="px-4 py-2 font-medium">{currency.code}</td>
                   <td className="px-4 py-2">{currency.name}</td>
                   <td className="px-4 py-2">{currency.rate}</td>
@@ -86,7 +87,7 @@ export default async function CurrenciesPage({
                       ]}
                     />
                   </td>
-                </tr>
+                </ClickableRow>
               ))
             )}
           </tbody>

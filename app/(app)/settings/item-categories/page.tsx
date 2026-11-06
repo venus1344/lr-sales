@@ -1,5 +1,6 @@
 import Link from 'next/link'
 
+import { ClickableRow } from '@/components/clickable-row'
 import { Pagination } from '@/components/pagination'
 import { RowActions } from '@/components/row-actions'
 import { SearchForm } from '@/components/search-form'
@@ -60,7 +61,7 @@ export default async function ItemCategoriesPage({
               </tr>
             ) : (
               categories.map((category) => (
-                <tr key={String(category.id)} className="border-b last:border-0">
+                <ClickableRow key={String(category.id)} href={`/settings/item-categories/${category.id}/edit`}>
                   <td className="px-4 py-2 font-medium">{category.name}</td>
                   <td className="px-4 py-2">{category.description}</td>
                   <td className="px-4 py-2">{category.active ? 'Active' : 'Inactive'}</td>
@@ -84,7 +85,7 @@ export default async function ItemCategoriesPage({
                       ]}
                     />
                   </td>
-                </tr>
+                </ClickableRow>
               ))
             )}
           </tbody>
