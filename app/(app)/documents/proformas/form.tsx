@@ -3,6 +3,7 @@
 import { useActionState, useState } from 'react'
 
 import { Combobox, type ComboboxOption } from '@/components/combobox'
+import { IconTrash } from '@/components/icons'
 import { createProforma, updateProforma, type ProformaFormState } from './actions'
 
 export type ItemOption = {
@@ -213,7 +214,7 @@ export function ProformaForm({ proforma, items }: ProformaFormProps) {
           {lines.map((line, i) => (
             <div key={i} className="grid grid-cols-12 gap-2">
               <Combobox
-                className="col-span-3"
+                className="col-span-4"
                 value={line.item_id}
                 label={labelFor(line.item_id)}
                 placeholder="Item…"
@@ -247,9 +248,11 @@ export function ProformaForm({ proforma, items }: ProformaFormProps) {
               <button
                 type="button"
                 onClick={() => removeLine(i)}
-                className="sk-btn-ghost col-span-2"
+                className="sk-icon-btn col-span-1"
+                aria-label="Remove item"
+                title="Remove item"
               >
-                Remove
+                <IconTrash className="h-4 w-4" />
               </button>
             </div>
           ))}

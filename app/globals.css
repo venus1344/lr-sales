@@ -72,6 +72,26 @@ body {
   background: #f9fafb;
 }
 
+/* Compact icon button (e.g. remove line) */
+.sk-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.25rem;
+  width: 2.25rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border);
+  background: #ffffff;
+  color: #6b7280;
+  cursor: pointer;
+  transition: background-color 0.12s ease, color 0.12s ease;
+}
+
+.sk-icon-btn:hover {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
 /* Input / select / textarea */
 .sk-input {
   width: 100%;
@@ -143,6 +163,7 @@ body {
   z-index: 30;
   margin-top: 0.25rem;
   width: 100%;
+  min-width: 15rem;
   max-height: 15rem;
   overflow-y: auto;
   background: #ffffff;
@@ -173,7 +194,6 @@ body {
 
 .sk-menu-option .hint {
   flex-shrink: 0;
-  max-width: 50%;
   color: var(--muted);
   font-size: 0.75rem;
 }

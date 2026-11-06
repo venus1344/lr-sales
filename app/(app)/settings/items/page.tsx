@@ -33,7 +33,7 @@ export default async function ItemsPage({
   ])
 
   return (
-    <main className="mx-auto max-w-4xl px-4 py-8">
+    <main className="mx-auto max-w-5xl px-4 py-8">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Items</h1>
         <Link href="/settings/items/new" className="sk-btn">New item</Link>
@@ -66,7 +66,7 @@ export default async function ItemsPage({
                 <tr key={String(item.id)} className="border-b last:border-0">
                   <td className="px-4 py-2 font-medium">{item.name}</td>
                   <td className="px-4 py-2">{item.item_categories?.name}</td>
-                  <td className="px-4 py-2">{item.unit_measure}</td>
+                  <td className="whitespace-nowrap px-4 py-2">{item.unit_measure}</td>
                   <td className="px-4 py-2 text-right">{item.price.toString()}</td>
                   <td className="px-4 py-2">{item.vat ? 'Yes' : 'No'}</td>
                   <td className="px-4 py-2">{item.active ? 'Active' : 'Inactive'}</td>

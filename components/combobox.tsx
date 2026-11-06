@@ -186,8 +186,8 @@ export function Combobox({
                     onMouseEnter={() => setActiveIndex(i)}
                     onClick={() => select(option)}
                   >
-                    <span className="truncate">{option.label}</span>
-                    {option.hint ? <span className="hint truncate">{option.hint}</span> : null}
+                    <span className="min-w-0 flex-1">{option.label}</span>
+                    {option.hint ? <span className="hint shrink-0">{option.hint}</span> : null}
                   </button>
                 </li>
               ))}
