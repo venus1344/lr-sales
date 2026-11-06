@@ -70,6 +70,12 @@
                                 <p>Item categories</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ route('suppliers') }}" class="nav-link {{ request()->routeIs('suppliers') ? 'active' : '' }}">
+                                <i class="nav-icon fa-solid fa-truck"></i>
+                                <p>Suppliers</p>
+                            </a>
+                        </li>
                     </ul>
                 </nav>
             </div>
