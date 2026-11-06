@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useActionState, useState } from 'react'
 
 import { Combobox, type ComboboxOption } from '@/components/combobox'
@@ -276,7 +277,7 @@ export function InvoiceForm({ invoice, proformaId, items }: InvoiceFormProps) {
         <button type="submit" disabled={pending} className="sk-btn">
           Save
         </button>
-        <a href="/documents/invoices" className="sk-link">Cancel</a>
+        <Link href="/documents/invoices" className="sk-link">Cancel</Link>
       </div>
     </form>
   )

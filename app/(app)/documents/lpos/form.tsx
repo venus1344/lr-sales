@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useActionState, useState } from 'react'
 
 import { Combobox, type ComboboxOption } from '@/components/combobox'
@@ -206,7 +207,7 @@ export function LpoForm({ lpo, suppliers, items }: LpoFormProps) {
         <button type="submit" disabled={pending} className="sk-btn">
           Save
         </button>
-        <a href="/documents/lpos" className="sk-link">Cancel</a>
+        <Link href="/documents/lpos" className="sk-link">Cancel</Link>
       </div>
     </form>
   )

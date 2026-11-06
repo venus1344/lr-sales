@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useActionState, useState } from 'react'
 
 import { Combobox, type ComboboxOption } from '@/components/combobox'
@@ -268,7 +269,7 @@ export function ProformaForm({ proforma, items }: ProformaFormProps) {
         <button type="submit" disabled={pending} className="sk-btn">
           Save
         </button>
-        <a href="/documents/proformas" className="sk-link">Cancel</a>
+        <Link href="/documents/proformas" className="sk-link">Cancel</Link>
       </div>
     </form>
   )
