@@ -162,13 +162,13 @@ export function LpoForm({ lpo, suppliers, items }: LpoFormProps) {
                 onChange={(option) => selectItem(i, option)}
               />
               <input
-                className="sk-input col-span-4"
+                className="sk-input col-span-3"
                 placeholder="Specification"
                 value={line.specification}
                 onChange={(e) => updateLine(i, 'specification', e.target.value)}
               />
               <input
-                className="sk-input col-span-1"
+                className="sk-input col-span-2"
                 type="number"
                 min="1"
                 title="Quantity"

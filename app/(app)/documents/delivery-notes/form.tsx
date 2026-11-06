@@ -186,13 +186,13 @@ export function DeliveryNoteForm({ dnote, items }: DeliveryNoteFormProps) {
                 onChange={(option) => selectItem(i, option)}
               />
               <input
-                className="sk-input col-span-4"
+                className="sk-input col-span-3"
                 placeholder="Description"
                 value={line.description}
                 onChange={(e) => updateLine(i, 'description', e.target.value)}
               />
               <input
-                className="sk-input col-span-1"
+                className="sk-input col-span-2"
                 type="number"
                 min="1"
                 title="Quantity"
