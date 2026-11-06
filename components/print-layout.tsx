@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import type { CSSProperties } from 'react'
 
 import { company } from '@/lib/company'
@@ -22,7 +23,8 @@ export function PrintHeader({
   date: string
 }) {
   return (
-    <header className="print-header mb-3 flex justify-between gap-6">
+    <header className="print-header mb-3 flex items-start gap-3">
+      <Image src="/welink-logo.jpg" alt="WeLink" width={366} height={275} className="h-10 w-auto shrink-0" />
       <div className="text-[9px] leading-tight">
         <p className="text-[11px] font-bold">{company.name}</p>
         <p>Mail: {company.mail}</p>
@@ -30,7 +32,7 @@ export function PrintHeader({
         <p>{company.address}</p>
         <p>Mobile: {company.mobile}</p>
       </div>
-      <div className="text-right">
+      <div className="ml-auto text-right">
         <p className="text-[15px] font-bold italic" style={{ color: '#c00000' }}>
           {documentType}
         </p>
