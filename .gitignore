@@ -44,10 +44,12 @@ next-env.d.ts
 # prisma generated client
 /generated/
 
-# runtime-uploaded files (expense receipts)
-/public/uploads/
+# runtime-uploaded files (expense receipts, private)
+/storage/
 
 # playwright
 /test-results/
 /playwright-report/
 /.playwright-browsers/
+.sample_docs/
+*.pdf
