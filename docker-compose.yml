@@ -1,0 +1,27 @@
+# Local development database (MySQL 8.0).
+#
+# Production deployments provide their own MySQL server — this compose file is
+# for local development only. Credentials come from `.env` (gitignored); see
+# `.env.example` for the required keys.
+services:
+  db:
+    image: mysql:8.0
+    container_name: welink-sales-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: welink_sales
+      MYSQL_USER: welink
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - "3307:3306"
+    volumes:
+      - welink_sales_mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+volumes:
+  welink_sales_mysql:
