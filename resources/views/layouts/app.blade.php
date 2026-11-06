@@ -64,6 +64,12 @@
                                 <p>Currencies</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ route('item-categories') }}" class="nav-link {{ request()->routeIs('item-categories') ? 'active' : '' }}">
+                                <i class="nav-icon fa-solid fa-tags"></i>
+                                <p>Item categories</p>
+                            </a>
+                        </li>
                     </ul>
                 </nav>
             </div>
