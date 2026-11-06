@@ -34,8 +34,22 @@ describe('calculateTotals', () => {
       withholding: 0,
       laborCharge: 0,
       discount: 0,
+      advance: 0,
       total: 0,
     })
+  })
+
+  it('subtracts a paid advance from the total', () => {
+    const result = calculateTotals([{ price: 100, quantity: 1 }], {
+      vatRate: 0.18,
+      withholdingRate: 0.02,
+      laborCharge: 0,
+      discount: 0,
+      advance: 30,
+    })
+
+    expect(result.advance).toBe(30)
+    expect(result.total).toBe(86) // 100 + 18 − 2 − 30
   })
 
   it('rounds money to 2 decimal places', () => {

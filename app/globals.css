@@ -259,6 +259,11 @@ body {
 
 /* Printable document */
 @media print {
+  @page {
+    size: A4;
+    margin: 10mm;
+  }
+
   .no-print {
     display: none !important;
   }
@@ -272,5 +277,24 @@ body {
     box-shadow: none !important;
     border-radius: 0 !important;
     padding: 0 !important;
+    max-width: none !important;
+    font-size: 9px;
+  }
+
+  /* The header and the large footer must never be split across pages. */
+  .print-header,
+  .print-footer {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Repeat the items table header on every printed page. */
+  .print-items thead {
+    display: table-header-group;
+  }
+
+  .print-items tr {
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
 }
