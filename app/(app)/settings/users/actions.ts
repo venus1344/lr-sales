@@ -6,7 +6,7 @@ import { redirect } from 'next/navigation'
 import { requireAbility } from '@/lib/auth/guard'
 import { hashPassword } from '@/lib/auth/password'
 import { prisma } from '@/lib/prisma'
-import { userCreateSchema, userUpdateSchema } from '@/lib/validation/user'
+import { userCreateSchema, userPasswordResetSchema, userUpdateSchema } from '@/lib/validation/user'
 
 export type UserFormState = { error?: string }
 
@@ -87,13 +87,32 @@ export async function updateUser(
     return { error: 'A user with that email already exists' }
   }
 
+  const password = String(formData.get('password') ?? '')
+  const passwordConfirmation = String(formData.get('password_confirmation') ?? '')
+  let passwordHash: string | null = null
+  if (password || passwordConfirmation) {
+    const pwResult = userPasswordResetSchema.safeParse({
+      password,
+      password_confirmation: passwordConfirmation,
+    })
+    if (!pwResult.success) {
+      return { error: pwResult.error.issues[0]?.message ?? 'Invalid password' }
+    }
+    passwordHash = await hashPassword(pwResult.data.password)
+  }
+
   const roleIds = readRoleIds(formData)
 
   await prisma.$transaction([
     prisma.role_user.deleteMany({ where: { user_id: userId } }),
     prisma.users.update({
       where: { id: userId },
-      data: { name: input.name, email: input.email, updated_by: actor },
+      data: {
+        name: input.name,
+        email: input.email,
+        updated_by: actor,
+        ...(passwordHash ? { password: passwordHash } : {}),
+      },
     }),
     ...roleIds.map((roleId) =>
       prisma.role_user.create({

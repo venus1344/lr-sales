@@ -4,6 +4,7 @@ import {
   passwordChangeSchema,
   profileSchema,
   userCreateSchema,
+  userPasswordResetSchema,
   userUpdateSchema,
 } from '../lib/validation/user'
 
@@ -67,6 +68,32 @@ describe('profileSchema', () => {
   })
 })
 
+describe('userPasswordResetSchema', () => {
+  it('accepts matching passwords', () => {
+    const result = userPasswordResetSchema.safeParse({
+      password: 'newpass12',
+      password_confirmation: 'newpass12',
+    })
+    expect(result.success).toBe(true)
+  })
+
+  it('rejects mismatched passwords', () => {
+    const result = userPasswordResetSchema.safeParse({
+      password: 'newpass12',
+      password_confirmation: 'other',
+    })
+    expect(result.success).toBe(false)
+  })
+
+  it('rejects a password shorter than 8 characters', () => {
+    const result = userPasswordResetSchema.safeParse({
+      password: 'short',
+      password_confirmation: 'short',
+    })
+    expect(result.success).toBe(false)
+  })
+})
+
 describe('passwordChangeSchema', () => {
   it('accepts a valid password change', () => {
     const result = passwordChangeSchema.safeParse({
@@ -86,3 +113,4 @@ describe('passwordChangeSchema', () => {
     expect(result.success).toBe(false)
   })
 })
+

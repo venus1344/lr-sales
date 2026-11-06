@@ -37,7 +37,23 @@ export function UserForm({ roles, user }: UserFormProps) {
         <input id="email" name="email" type="email" required maxLength={300} defaultValue={user?.email} className="sk-input" />
       </div>
 
-      {user ? null : (
+      {user ? (
+        <>
+          <p className="text-sm text-gray-500">
+            Set a new password only if you need to reset this account. Leave blank to keep the current password.
+          </p>
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700">New password</label>
+            <input id="password" name="password" type="password" minLength={8} className="sk-input" placeholder="Leave blank to keep current" />
+          </div>
+          <div>
+            <label htmlFor="password_confirmation" className="block text-sm font-medium text-gray-700">
+              Confirm new password
+            </label>
+            <input id="password_confirmation" name="password_confirmation" type="password" minLength={8} className="sk-input" placeholder="Leave blank to keep current" />
+          </div>
+        </>
+      ) : (
         <>
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
