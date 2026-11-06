@@ -18,15 +18,15 @@ export default async function ItemsPage() {
     <main className="mx-auto max-w-4xl px-4 py-8">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Items</h1>
-        <Link href="/settings/items/new" className="rounded-md bg-black px-4 py-2 text-sm font-medium text-white hover:bg-gray-800">
+        <Link href="/settings/items/new" className="sk-btn">
           New item
         </Link>
       </div>
 
-      <div className="mt-6 overflow-hidden rounded-md border border-gray-200">
+      <div className="sk-card mt-6 overflow-hidden">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b bg-gray-50 text-left text-gray-500">
+            <tr className="sk-table-head text-left">
               <th className="px-4 py-2">Name</th>
               <th className="px-4 py-2">Category</th>
               <th className="px-4 py-2">Unit</th>
@@ -49,11 +49,11 @@ export default async function ItemsPage() {
                   <td className="px-4 py-2">{item.unit_measure}</td>
                   <td className="px-4 py-2 text-right">{item.price.toString()}</td>
                   <td className="px-4 py-2">{item.vat ? 'Yes' : 'No'}</td>
-                  <td className="px-4 py-2">{item.active ? 'Active' : 'Inactive'}</td>
+                  <td className="px-4 py-2"><span className={item.active ? 'sk-badge sk-badge-on' : 'sk-badge sk-badge-off'}>{item.active ? 'Active' : 'Inactive'}</span></td>
                   <td className="px-4 py-2 text-right">
-                    <Link href={`/settings/items/${item.id}/edit`} className="mr-3 text-blue-600 hover:underline">Edit</Link>
+                    <Link href={`/settings/items/${item.id}/edit`} className="mr-3 sk-link">Edit</Link>
                     <form action={deleteItem.bind(null, String(item.id))} className="inline">
-                      <button type="submit" className="text-red-600 hover:underline">Delete</button>
+                      <button type="submit" className="sk-link-danger">Delete</button>
                     </form>
                   </td>
                 </tr>

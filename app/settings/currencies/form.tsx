@@ -38,7 +38,7 @@ export function CurrencyForm({ currency }: CurrencyFormProps) {
           required
           maxLength={3}
           defaultValue={currency?.code}
-          className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-black focus:outline-none"
+          className="sk-input"
         />
       </div>
 
@@ -51,7 +51,7 @@ export function CurrencyForm({ currency }: CurrencyFormProps) {
           name="name"
           required
           defaultValue={currency?.name}
-          className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-black focus:outline-none"
+          className="sk-input"
         />
       </div>
 
@@ -66,7 +66,7 @@ export function CurrencyForm({ currency }: CurrencyFormProps) {
           step="0.01"
           required
           defaultValue={currency?.rate}
-          className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-black focus:outline-none"
+          className="sk-input"
         />
       </div>
 
@@ -84,7 +84,7 @@ export function CurrencyForm({ currency }: CurrencyFormProps) {
         <button
           type="submit"
           disabled={pending}
-          className="rounded-md bg-black px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-50"
+          className="sk-btn disabled:opacity-50"
         >
           Save
         </button>

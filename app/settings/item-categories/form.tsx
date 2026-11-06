@@ -36,7 +36,7 @@ export function ItemCategoryForm({ category }: ItemCategoryFormProps) {
           name="name"
           required
           defaultValue={category?.name}
-          className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-black focus:outline-none"
+          className="sk-input"
         />
       </div>
 
@@ -49,7 +49,7 @@ export function ItemCategoryForm({ category }: ItemCategoryFormProps) {
           name="description"
           rows={2}
           defaultValue={category?.description ?? ''}
-          className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-black focus:outline-none"
+          className="sk-input"
         />
       </div>
 
@@ -67,7 +67,7 @@ export function ItemCategoryForm({ category }: ItemCategoryFormProps) {
         <button
           type="submit"
           disabled={pending}
-          className="rounded-md bg-black px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-50"
+          className="sk-btn disabled:opacity-50"
         >
           Save
         </button>

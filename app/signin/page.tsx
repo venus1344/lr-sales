@@ -53,7 +53,7 @@ export default async function SignInPage({
               type="email"
               required
               autoComplete="email"
-              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-black focus:outline-none"
+              className="sk-input"
             />
           </div>
           <div>
@@ -66,12 +66,12 @@ export default async function SignInPage({
               type="password"
               required
               autoComplete="current-password"
-              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-black focus:outline-none"
+              className="sk-input"
             />
           </div>
           <button
             type="submit"
-            className="w-full rounded-md bg-black px-4 py-2 text-sm font-medium text-white hover:bg-gray-800"
+            className="w-full sk-btn"
           >
             Sign in
           </button>

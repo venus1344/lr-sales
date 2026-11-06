@@ -18,7 +18,7 @@ export type CustomerFormProps = {
   }
 }
 
-const input = 'mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-black focus:outline-none'
+const input = 'sk-input'
 
 export function CustomerForm({ customer }: CustomerFormProps) {
   const action = customer ? updateCustomer.bind(null, customer.id) : createCustomer
@@ -67,7 +67,7 @@ export function CustomerForm({ customer }: CustomerFormProps) {
       </label>
 
       <div className="flex items-center gap-3 pt-2">
-        <button type="submit" disabled={pending} className="rounded-md bg-black px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-50">
+        <button type="submit" disabled={pending} className="sk-btn disabled:opacity-50">
           Save
         </button>
         <a href="/settings/customers" className="text-sm text-gray-500 hover:text-gray-700">Cancel</a>
