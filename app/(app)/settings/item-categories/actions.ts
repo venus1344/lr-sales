@@ -1,11 +1,11 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
 
 import { requireAbility } from '@/lib/auth/guard'
 import { prisma } from '@/lib/prisma'
 import { itemCategorySchema } from '@/lib/validation/item-category'
+import { redirectWithToast } from '@/lib/toast'
 
 export type ItemCategoryFormState = { error?: string }
 
@@ -35,7 +35,7 @@ export async function createItemCategory(
   })
 
   revalidatePath('/settings/item-categories')
-  redirect('/settings/item-categories')
+  return redirectWithToast('/settings/item-categories', 'Item category created')
 }
 
 export async function updateItemCategory(
@@ -56,7 +56,7 @@ export async function updateItemCategory(
   })
 
   revalidatePath('/settings/item-categories')
-  redirect('/settings/item-categories')
+  return redirectWithToast('/settings/item-categories', 'Item category updated')
 }
 
 export async function deleteItemCategory(id: string): Promise<void> {

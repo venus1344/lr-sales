@@ -1,11 +1,11 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
 
 import { requireAbility } from '@/lib/auth/guard'
 import { prisma } from '@/lib/prisma'
 import { itemSchema } from '@/lib/validation/item'
+import { redirectWithToast } from '@/lib/toast'
 
 export type ItemFormState = { error?: string }
 
@@ -43,7 +43,7 @@ export async function createItem(
   })
 
   revalidatePath('/settings/items')
-  redirect('/settings/items')
+  return redirectWithToast('/settings/items', 'Item created')
 }
 
 export async function updateItem(
@@ -68,7 +68,7 @@ export async function updateItem(
   })
 
   revalidatePath('/settings/items')
-  redirect('/settings/items')
+  return redirectWithToast('/settings/items', 'Item updated')
 }
 
 export async function deleteItem(id: string): Promise<void> {

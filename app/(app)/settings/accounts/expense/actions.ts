@@ -1,11 +1,11 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
 
 import { requireAbility } from '@/lib/auth/guard'
 import { prisma } from '@/lib/prisma'
 import { accountSchema } from '@/lib/validation/account'
+import { redirectWithToast } from '@/lib/toast'
 
 export type AccountFormState = { error?: string }
 
@@ -34,7 +34,7 @@ export async function createExpenseAccount(
 
   revalidatePath('/settings/accounts')
   revalidatePath('/settings/accounts/expense')
-  redirect('/settings/accounts/expense')
+  return redirectWithToast('/settings/accounts/expense', 'Expense account created')
 }
 
 export async function updateExpenseAccount(
@@ -56,7 +56,7 @@ export async function updateExpenseAccount(
 
   revalidatePath('/settings/accounts')
   revalidatePath('/settings/accounts/expense')
-  redirect('/settings/accounts/expense')
+  return redirectWithToast('/settings/accounts/expense', 'Expense account updated')
 }
 
 export async function deleteExpenseAccount(id: string): Promise<void> {

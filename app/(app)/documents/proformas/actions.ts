@@ -1,12 +1,12 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
 
 import { requireAbility } from '@/lib/auth/guard'
 import { DocumentPrefix, documentNumber, nextSequence } from '@/lib/numbering'
 import { prisma } from '@/lib/prisma'
 import { proformaSchema } from '@/lib/validation/proforma'
+import { redirectWithToast } from '@/lib/toast'
 
 export type ProformaFormState = { error?: string }
 
@@ -87,7 +87,7 @@ export async function createProforma(
   })
 
   revalidatePath('/documents/proformas')
-  redirect('/documents/proformas')
+  return redirectWithToast('/documents/proformas', 'Proforma created')
 }
 
 export async function updateProforma(
@@ -139,22 +139,26 @@ export async function updateProforma(
   ])
 
   revalidatePath('/documents/proformas')
-  redirect(`/documents/proformas/${id}`)
+  return redirectWithToast(`/documents/proformas/${id}`, 'Proforma updated')
 }
 
 export async function deleteProforma(id: string): Promise<void> {
   await requireAbility('proforma_remove')
 
   const proformaId = BigInt(id)
-  await prisma.$transaction([
-    prisma.proforma_items.deleteMany({ where: { proforma_id: proformaId } }),
-    prisma.invoices.updateMany({
-      where: { proforma_id: proformaId },
-      data: { proforma_id: null },
-    }),
-    prisma.proformas.delete({ where: { id: proformaId } }),
-  ])
+  try {
+    await prisma.$transaction([
+      prisma.proforma_items.deleteMany({ where: { proforma_id: proformaId } }),
+      prisma.invoices.updateMany({
+        where: { proforma_id: proformaId },
+        data: { proforma_id: null },
+      }),
+      prisma.proformas.delete({ where: { id: proformaId } }),
+    ])
+  } catch {
+    return redirectWithToast('/documents/proformas', 'Could not delete the proforma', 'error')
+  }
 
   revalidatePath('/documents/proformas')
-  redirect('/documents/proformas')
+  return redirectWithToast('/documents/proformas', 'Proforma deleted')
 }

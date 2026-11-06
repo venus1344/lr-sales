@@ -1,6 +1,7 @@
 'use client'
 
 import { useActionState } from 'react'
+import { useFormToast } from '@/components/toast'
 
 import { createExpense, updateExpense, type ExpenseFormState } from './actions'
 
@@ -39,6 +40,7 @@ export function ExpenseForm({
   const [state, formAction, pending] = useActionState<ExpenseFormState, FormData>(action, {
     error: undefined,
   })
+  useFormToast(state)
 
   return (
     <form action={formAction} className="space-y-4">

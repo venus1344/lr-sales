@@ -1,13 +1,13 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
 
 import { signOut } from '@/auth'
 import { requireUser } from '@/lib/auth/guard'
 import { hashPassword, verifyPassword } from '@/lib/auth/password'
 import { prisma } from '@/lib/prisma'
 import { passwordChangeSchema, profileSchema } from '@/lib/validation/user'
+import { redirectWithToast } from '@/lib/toast'
 
 export type ProfileFormState = { error?: string; success?: string }
 
@@ -85,5 +85,5 @@ export async function changePassword(
   })
 
   await signOut({ redirect: false })
-  redirect('/signin')
+  return redirectWithToast('/signin', 'Password changed')
 }

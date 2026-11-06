@@ -1,11 +1,11 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
 
 import { requireAbility } from '@/lib/auth/guard'
 import { prisma } from '@/lib/prisma'
 import { customerSchema } from '@/lib/validation/customer'
+import { redirectWithToast } from '@/lib/toast'
 
 export type CustomerFormState = { error?: string }
 
@@ -40,7 +40,7 @@ export async function createCustomer(
   })
 
   revalidatePath('/settings/customers')
-  redirect('/settings/customers')
+  return redirectWithToast('/settings/customers', 'Customer created')
 }
 
 export async function updateCustomer(
@@ -61,7 +61,7 @@ export async function updateCustomer(
   })
 
   revalidatePath('/settings/customers')
-  redirect('/settings/customers')
+  return redirectWithToast('/settings/customers', 'Customer updated')
 }
 
 export async function deleteCustomer(id: string): Promise<void> {

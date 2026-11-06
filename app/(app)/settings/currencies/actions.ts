@@ -1,11 +1,11 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
 
 import { requireAbility } from '@/lib/auth/guard'
 import { prisma } from '@/lib/prisma'
 import { currencySchema } from '@/lib/validation/currency'
+import { redirectWithToast } from '@/lib/toast'
 
 export type CurrencyFormState = { error?: string }
 
@@ -34,7 +34,7 @@ export async function createCurrency(
   })
 
   revalidatePath('/settings/currencies')
-  redirect('/settings/currencies')
+  return redirectWithToast('/settings/currencies', 'Currency created')
 }
 
 export async function updateCurrency(
@@ -55,7 +55,7 @@ export async function updateCurrency(
   })
 
   revalidatePath('/settings/currencies')
-  redirect('/settings/currencies')
+  return redirectWithToast('/settings/currencies', 'Currency updated')
 }
 
 export async function deleteCurrency(id: string): Promise<void> {

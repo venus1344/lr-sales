@@ -1,12 +1,12 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
 
 import { requireAbility } from '@/lib/auth/guard'
 import { prisma } from '@/lib/prisma'
 import { saveReceipt, validateReceipt } from '@/lib/uploads'
 import { expenseSchema } from '@/lib/validation/expense'
+import { redirectWithToast } from '@/lib/toast'
 
 export type ExpenseFormState = { error?: string }
 
@@ -64,7 +64,7 @@ export async function createExpense(
   })
 
   revalidatePath('/expenses')
-  redirect('/expenses')
+  return redirectWithToast('/expenses', 'Expense created')
 }
 
 export async function updateExpense(
@@ -112,7 +112,7 @@ export async function updateExpense(
   })
 
   revalidatePath('/expenses')
-  redirect('/expenses')
+  return redirectWithToast('/expenses', 'Expense updated')
 }
 
 export async function deleteExpense(id: string): Promise<void> {

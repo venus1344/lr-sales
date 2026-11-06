@@ -1,11 +1,11 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
 
 import { requireAbility } from '@/lib/auth/guard'
 import { prisma } from '@/lib/prisma'
 import { supplierSchema } from '@/lib/validation/supplier'
+import { redirectWithToast } from '@/lib/toast'
 
 export type SupplierFormState = { error?: string }
 
@@ -40,7 +40,7 @@ export async function createSupplier(
   })
 
   revalidatePath('/settings/suppliers')
-  redirect('/settings/suppliers')
+  return redirectWithToast('/settings/suppliers', 'Supplier created')
 }
 
 export async function updateSupplier(
@@ -61,7 +61,7 @@ export async function updateSupplier(
   })
 
   revalidatePath('/settings/suppliers')
-  redirect('/settings/suppliers')
+  return redirectWithToast('/settings/suppliers', 'Supplier updated')
 }
 
 export async function deleteSupplier(id: string): Promise<void> {

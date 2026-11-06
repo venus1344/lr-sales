@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useActionState, useState } from 'react'
+import { useFormToast } from '@/components/toast'
 
 import { Combobox, type ComboboxOption } from '@/components/combobox'
 import { IconTrash } from '@/components/icons'
@@ -60,6 +61,7 @@ export function DeliveryNoteForm({ dnote, items }: DeliveryNoteFormProps) {
     action,
     { error: undefined },
   )
+  useFormToast(state)
 
   const [lines, setLines] = useState<DNoteLine[]>(dnote?.lines ?? [])
   const [labels, setLabels] = useState<Record<string, string>>(() =>

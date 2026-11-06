@@ -1,6 +1,7 @@
 'use client'
 
 import { useActionState } from 'react'
+import { useFormToast } from '@/components/toast'
 
 import { createItemCategory, updateItemCategory, type ItemCategoryFormState } from './actions'
 
@@ -22,6 +23,7 @@ export function ItemCategoryForm({ category }: ItemCategoryFormProps) {
     action,
     { error: undefined },
   )
+  useFormToast(state)
 
   return (
     <form action={formAction} className="space-y-4">

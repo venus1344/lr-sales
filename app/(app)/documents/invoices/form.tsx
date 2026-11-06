@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useActionState, useState } from 'react'
+import { useFormToast } from '@/components/toast'
 
 import { Combobox, type ComboboxOption } from '@/components/combobox'
 import { IconTrash } from '@/components/icons'
@@ -71,6 +72,7 @@ export function InvoiceForm({ invoice, proformaId, items }: InvoiceFormProps) {
     action,
     { error: undefined },
   )
+  useFormToast(state)
 
   const [lines, setLines] = useState<InvoiceLine[]>(invoice?.lines ?? [])
   const [labels, setLabels] = useState<Record<string, string>>(() =>

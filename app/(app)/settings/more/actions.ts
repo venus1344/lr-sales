@@ -1,12 +1,12 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
 
 import { requireAbility } from '@/lib/auth/guard'
 import { prisma } from '@/lib/prisma'
 import { toSnakeCase } from '@/lib/strings'
 import { settingSchema, settingValueSchema } from '@/lib/validation/setting'
+import { redirectWithToast } from '@/lib/toast'
 
 export type SettingFormState = { error?: string }
 
@@ -33,7 +33,7 @@ export async function createSetting(
   await prisma.settings.create({ data: { name, value: String(result.data.value) } })
 
   revalidatePath('/settings/more')
-  redirect('/settings/more')
+  return redirectWithToast('/settings/more', 'Setting created')
 }
 
 export async function updateSetting(
@@ -69,5 +69,5 @@ export async function updateSetting(
   ])
 
   revalidatePath('/settings/more')
-  redirect('/settings/more')
+  return redirectWithToast('/settings/more', 'Setting updated')
 }

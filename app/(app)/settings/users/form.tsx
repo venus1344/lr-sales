@@ -1,6 +1,7 @@
 'use client'
 
 import { useActionState } from 'react'
+import { useFormToast } from '@/components/toast'
 
 import { createUser, updateUser, type UserFormState } from './actions'
 
@@ -22,6 +23,7 @@ export function UserForm({ roles, user }: UserFormProps) {
   const [state, formAction, pending] = useActionState<UserFormState, FormData>(action, {
     error: undefined,
   })
+  useFormToast(state)
 
   return (
     <form action={formAction} className="space-y-4">

@@ -23,8 +23,9 @@ test.describe('Users administration', () => {
 
     await page.getByRole('button', { name: 'Save' }).click()
 
-    // Save redirects back to the users list.
+    // Save redirects back to the users list and confirms with a toast.
     await expect(page).toHaveURL(/\/settings\/users$/, { timeout: 40_000 })
+    await expect(page.getByText('User created')).toBeVisible()
 
     // Find the new user by its unique email and confirm the role badge.
     await page.goto(`/settings/users?q=${encodeURIComponent(email)}`)

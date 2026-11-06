@@ -28,6 +28,19 @@ const sections = [
     items: [{ href: '/', label: 'Dashboard', icon: IconDashboard }],
   },
   {
+    title: 'Documents',
+    items: [
+      { href: '/documents/proformas', label: 'Proformas', icon: IconProformas },
+      { href: '/documents/invoices', label: 'Invoices', icon: IconInvoices },
+      { href: '/documents/delivery-notes', label: 'Delivery notes', icon: IconDeliveryNotes },
+      { href: '/documents/lpos', label: 'LPOs', icon: IconLpos },
+    ],
+  },
+  {
+    title: 'Finance',
+    items: [{ href: '/expenses', label: 'Expenses', icon: IconExpenses }],
+  },
+  {
     title: 'Settings',
     items: [
       { href: '/settings/customers', label: 'Customers', icon: IconCustomers },
@@ -37,19 +50,6 @@ const sections = [
       { href: '/settings/currencies', label: 'Currencies', icon: IconCurrencies },
       { href: '/settings/packages', label: 'Packages', icon: IconPackages },
       { href: '/settings/accounts', label: 'Accounts', icon: IconAccounts },
-    ],
-  },
-  {
-    title: 'Finance',
-    items: [{ href: '/expenses', label: 'Expenses', icon: IconExpenses }],
-  },
-  {
-    title: 'Documents',
-    items: [
-      { href: '/documents/proformas', label: 'Proformas', icon: IconProformas },
-      { href: '/documents/invoices', label: 'Invoices', icon: IconInvoices },
-      { href: '/documents/delivery-notes', label: 'Delivery notes', icon: IconDeliveryNotes },
-      { href: '/documents/lpos', label: 'LPOs', icon: IconLpos },
     ],
   },
 ]

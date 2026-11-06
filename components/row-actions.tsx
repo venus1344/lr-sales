@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 
 import { IconConvert, IconDots, IconEdit, IconPrint, IconTrash } from '@/components/icons'
+import { useToast } from '@/components/toast'
 
 const ICONS = {
   convert: IconConvert,
@@ -28,8 +29,17 @@ export type RowAction =
 
 const MENU_WIDTH = 176
 
+function successMessage(label: string): string {
+  const text = label.toLowerCase()
+  if (text.includes('unblock')) return 'User unblocked'
+  if (text.includes('block')) return 'User blocked'
+  if (text.includes('delete') || text.includes('remove')) return 'Deleted'
+  return 'Saved'
+}
+
 export function RowActions({ actions }: { actions: RowAction[] }) {
   const router = useRouter()
+  const { push } = useToast()
   const [open, setOpen] = useState(false)
   const [position, setPosition] = useState<{ top: number; left: number } | null>(null)
   const [pending, setPending] = useState(false)
@@ -68,9 +78,11 @@ export function RowActions({ actions }: { actions: RowAction[] }) {
     try {
       await action.submit(action.id)
       setOpen(false)
+      push(successMessage(action.label), 'success')
       router.refresh()
     } catch {
       // Keep the menu open so the user can retry; auth/redirect errors are handled upstream.
+      push('Could not complete the action', 'error')
     } finally {
       setPending(false)
     }

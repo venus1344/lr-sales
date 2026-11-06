@@ -99,14 +99,16 @@ test.describe('Documents (UI)', () => {
     await page.getByRole('link', { name: 'Cancel' }).click()
     await expect(page).toHaveURL(viewUrl, { timeout: 40_000 })
 
-    // Edit, then Save returns to the same view.
+    // Edit, then Save returns to the same view and confirms with a toast.
     await page.getByRole('link', { name: 'Edit' }).click()
     await expect(page).toHaveURL(/\/documents\/proformas\/\d+\/edit$/, { timeout: 40_000 })
     await page.getByRole('button', { name: 'Save' }).click()
     await expect(page).toHaveURL(viewUrl, { timeout: 40_000 })
+    await expect(page.getByText('Proforma updated')).toBeVisible()
 
-    // Delete is the only action that returns to the list.
+    // Delete is the only action that returns to the list, with its own toast.
     await page.getByRole('button', { name: 'Delete' }).click()
     await expect(page).toHaveURL(/\/documents\/proformas$/, { timeout: 40_000 })
+    await expect(page.getByText('Proforma deleted')).toBeVisible()
   })
 })
