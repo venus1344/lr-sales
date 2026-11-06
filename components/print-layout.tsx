@@ -1,4 +1,16 @@
+import type { CSSProperties } from 'react'
+
 import { company } from '@/lib/company'
+
+/** Cell style for the coloured summary tables (orange fill, navy borders). */
+const summaryCell: CSSProperties = {
+  border: '2px solid #052365',
+  padding: 4,
+  fontSize: 9,
+}
+
+const summaryCellBold: CSSProperties = { ...summaryCell, fontWeight: 700 }
+
 
 export function PrintHeader({
   documentType,
@@ -43,7 +55,7 @@ export function PrintDetails({
   lines: Array<string | null | undefined>
 }) {
   return (
-    <div className="mb-2 px-2 py-1 text-[9px] leading-tight" style={{ backgroundColor: '#e2efda' }}>
+    <div className="mb-2 px-2 py-1 text-[9px] leading-tight" style={{ backgroundColor: '#C5E0B3' }}>
       <p className="font-bold">{heading}</p>
       {lines.filter((line): line is string => Boolean(line)).map((line) => (
         <p key={line}>{line}</p>
@@ -85,76 +97,46 @@ export function PrintFooter({
   return (
     <div className="print-footer mt-3 text-[9px]">
       {showBank || (showTotals && totals) ? (
-        <table className="w-full">
+        <table className="w-full" style={{ borderCollapse: 'collapse' }}>
           <tbody>
             <tr>
-              <td className="w-[55%] align-top">
+              <td className="w-[55%] align-top" style={{ padding: 0 }}>
                 {showBank ? (
-                  <table className="w-full">
+                  <table
+                    className="w-full"
+                    style={{ borderCollapse: 'collapse', backgroundColor: '#eab76a', textAlign: 'center' }}
+                  >
                     <tbody>
                       <tr>
-                        <td className="font-bold" colSpan={2}>{company.bank.accountName}</td>
+                        <td colSpan={2} style={summaryCellBold}>{company.bank.accountName}</td>
                       </tr>
-                      <tr>
-                        <td className="font-bold">BANK NAME</td>
-                        <td>{company.bank.bankName}</td>
-                      </tr>
-                      <tr>
-                        <td className="font-bold">ACC. NUMBER TZS</td>
-                        <td>{company.bank.accountTzs}</td>
-                      </tr>
-                      <tr>
-                        <td className="font-bold">ACC. NUMBER USD</td>
-                        <td>{company.bank.accountUsd}</td>
-                      </tr>
-                      <tr>
-                        <td className="font-bold">SWIFT CODE</td>
-                        <td>{company.bank.swift}</td>
-                      </tr>
-                      <tr>
-                        <td className="font-bold">BRANCH CODE</td>
-                        <td>{company.bank.branchCode}</td>
-                      </tr>
-                      <tr>
-                        <td className="font-bold">BRANCH NAME</td>
-                        <td>{company.bank.branchName}</td>
-                      </tr>
+                      <tr><td style={summaryCellBold}>BANK NAME</td><td style={summaryCell}>{company.bank.bankName}</td></tr>
+                      <tr><td style={summaryCellBold}>ACC. NUMBER TZS</td><td style={summaryCell}>{company.bank.accountTzs}</td></tr>
+                      <tr><td style={summaryCellBold}>ACC. NUMBER USD</td><td style={summaryCell}>{company.bank.accountUsd}</td></tr>
+                      <tr><td style={summaryCellBold}>SWIFT CODE</td><td style={summaryCell}>{company.bank.swift}</td></tr>
+                      <tr><td style={summaryCellBold}>BRANCH CODE</td><td style={summaryCell}>{company.bank.branchCode}</td></tr>
+                      <tr><td style={summaryCellBold}>BRANCH NAME</td><td style={summaryCell}>{company.bank.branchName}</td></tr>
                     </tbody>
                   </table>
                 ) : null}
               </td>
-              <td className="w-[5%]" />
-              <td className="w-[40%] align-top">
+              <td className="w-[5%]" style={{ padding: 0 }} />
+              <td className="w-[40%] align-top" style={{ padding: 0 }}>
                 {showTotals && totals ? (
-                  <table className="w-full">
+                  <table
+                    className="w-full"
+                    style={{ borderCollapse: 'collapse', backgroundColor: '#eab76a', textAlign: 'right' }}
+                  >
                     <tbody>
-                      <tr>
-                        <td>Material Cost</td>
-                        <td className="text-right font-bold">{money(totals.subtotal)}</td>
-                      </tr>
-                      <tr>
-                        <td>Labor Charge</td>
-                        <td className="text-right font-bold">{money(totals.laborCharge)}</td>
-                      </tr>
-                      <tr>
-                        <td>VAT Cost</td>
-                        <td className="text-right font-bold">{money(totals.vat)}</td>
-                      </tr>
-                      <tr>
-                        <td>Withholding tax</td>
-                        <td className="text-right font-bold">-{money(totals.withholding)}</td>
-                      </tr>
-                      <tr>
-                        <td>Advance</td>
-                        <td className="text-right font-bold">-{money(totals.advance)}</td>
-                      </tr>
-                      <tr>
-                        <td>Discount</td>
-                        <td className="text-right font-bold">-{money(totals.discount)}</td>
-                      </tr>
-                      <tr>
-                        <td className="font-bold" style={{ backgroundColor: '#d9d9d9' }}>TOTAL COST</td>
-                        <td className="text-right font-bold" style={{ backgroundColor: '#d9d9d9' }}>{money(totals.total)}</td>
+                      <tr><td style={summaryCell}>Material Cost</td><td style={summaryCellBold}>{money(totals.subtotal)}</td></tr>
+                      <tr><td style={summaryCell}>Labor Charge</td><td style={summaryCellBold}>{money(totals.laborCharge)}</td></tr>
+                      <tr><td style={summaryCell}>VAT Cost</td><td style={summaryCellBold}>{money(totals.vat)}</td></tr>
+                      <tr><td style={summaryCell}>Withholding tax</td><td style={summaryCellBold}>-{money(totals.withholding)}</td></tr>
+                      <tr><td style={summaryCell}>Advance</td><td style={summaryCellBold}>-{money(totals.advance)}</td></tr>
+                      <tr><td style={summaryCell}>Discount</td><td style={summaryCellBold}>-{money(totals.discount)}</td></tr>
+                      <tr style={{ backgroundColor: 'lightgray' }}>
+                        <td style={summaryCellBold}>TOTAL COST</td>
+                        <td style={summaryCellBold}>{money(totals.total)}</td>
                       </tr>
                     </tbody>
                   </table>
