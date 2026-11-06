@@ -68,12 +68,12 @@ export function DocumentView({
         {actions}
       </div>
 
-      <div className="sk-card mt-6 p-4">
-        <dl className="grid grid-cols-[auto,1fr] gap-x-6 gap-y-1.5 text-sm">
+      <div className="sk-card mt-6 p-3">
+        <dl className="grid grid-cols-2 gap-x-6 gap-y-2 sm:grid-cols-3">
           {summary.map((item) => (
-            <div key={item.label} className="contents">
-              <dt className="text-gray-500">{item.label}</dt>
-              <dd className="font-medium text-gray-900">{item.value}</dd>
+            <div key={item.label}>
+              <dt className="text-[11px] uppercase tracking-wide text-gray-400">{item.label}</dt>
+              <dd className="text-sm font-medium text-gray-900">{item.value}</dd>
             </div>
           ))}
         </dl>
