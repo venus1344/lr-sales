@@ -82,6 +82,12 @@
                                 <p>Customers</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ route('items') }}" class="nav-link {{ request()->routeIs('items') ? 'active' : '' }}">
+                                <i class="nav-icon fa-solid fa-boxes-stacked"></i>
+                                <p>Items</p>
+                            </a>
+                        </li>
                     </ul>
                 </nav>
             </div>

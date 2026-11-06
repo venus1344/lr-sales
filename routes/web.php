@@ -10,4 +10,5 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('settings/item-categories', 'item-categories.index')->name('item-categories');
     Route::view('settings/suppliers', 'suppliers.index')->name('suppliers');
     Route::view('settings/customers', 'customers.index')->name('customers');
+    Route::view('settings/items', 'items.index')->name('items');
 });
