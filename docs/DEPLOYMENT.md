@@ -225,3 +225,8 @@ docker compose -f docker-compose.prod.yml run --rm --no-deps seed      # re-run 
   `DATABASE_URL` or rebuild the URL — the app parses `DATABASE_URL` as a URL.
 - `import` logs "db/data.sql not present" → that is fine (empty dataset); generate the
   file first if you want the legacy data.
+- `migrate` fails with `Prisma failed to detect the libssl/openssl version` → the image is
+  missing OpenSSL (the Dockerfile installs it); rebuild with `docker compose -f
+  docker-compose.prod.yml build --no-cache migrate app`.
+- `migrate` fails with `unknown or unexpected option: --skip-generate` → stale image; Prisma 7
+  removed that flag from `db push`. Rebuild the images.
